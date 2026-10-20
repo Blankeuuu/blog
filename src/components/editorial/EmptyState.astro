@@ -10,58 +10,78 @@ interface Props {
 const { message, isTagFilter = false } = Astro.props;
 ---
 
-<section class="my-16 max-w-4xl mx-auto border-2 border-[var(--color-blue)] bg-[var(--color-card)] p-8 sm:p-12 relative overflow-hidden">
-  <!-- Ozdobny narożnik riso -->
-  <div class="absolute top-0 right-0 w-16 h-16 bg-[var(--color-magenta)] text-white font-mono text-[10px] flex items-center justify-center rotate-45 translate-x-6 -translate-y-6">
-    BLANKEU
+<section class="my-12 max-w-4xl mx-auto terminal-window border border-[var(--color-border)] bg-[var(--bg-surface)] p-6 sm:p-10 relative overflow-hidden corner-brackets">
+  <!-- Pasek tytułowy okna retro OS -->
+  <div class="flex items-center justify-between border-b border-[var(--color-border)] pb-2.5 mb-6 font-mono text-xs text-[var(--color-ink-muted)]">
+    <div class="flex items-center gap-2">
+      <span class="w-2.5 h-2.5 bg-[var(--color-green)] inline-block"></span>
+      <span class="text-[var(--color-green)] font-bold">
+        {isTagFilter ? 'DIAGNOSTIC // FILTER_QUERY_RESULT' : 'POST_DIAGNOSTIC // NVRAM_CHECK // CODE: 0x00'}
+      </span>
+    </div>
+    <div class="flex items-center gap-1.5 text-[9px]">
+      <span>_</span>
+      <span>[]</span>
+      <span>X</span>
+    </div>
   </div>
 
-  <div class="flex items-center gap-3 font-mono text-xs text-[var(--color-magenta)] mb-4">
-    <span class="inline-block w-2.5 h-2.5 bg-[var(--color-magenta)]"></span>
-    <span>{isTagFilter ? '[WYNIK FILTROWANIA]' : '[STATUS // WYDANIE #00]'}</span>
+  <!-- Zrzut logu startowego / POST -->
+  <div class="font-mono text-xs text-[var(--color-ink-muted)] bg-[var(--bg-canvas)] p-4 border border-[var(--color-border)] mb-6 space-y-1">
+    <div class="text-[var(--color-green)]">[0.000000] BLANKEU_KERNEL v7.4.2-rt #1 PREEMPT INIT</div>
+    <div>[0.002810] CPU: 240MHz DUAL CORE // DMA BUFFER ALLOCATED</div>
+    <div>[0.007420] NVRAM_SCAN: /src/content/posts/*.md ... 0 PUBLISHED OBJECTS</div>
+    <div class="text-[var(--color-yellow)]">[0.012100] WARNING: NVRAM BUFFER IS CURRENTLY EMPTY</div>
+    <div class="text-[var(--color-green)] flex items-center gap-1">
+      <span>[0.015040] STATUS: LISTENING FOR FIRST PAYLOAD VIA PAGES CMS</span>
+      <span class="cursor-block"></span>
+    </div>
   </div>
 
-  <h2 class="font-display font-black text-3xl sm:text-4xl text-[var(--color-ink)] tracking-tight">
+  <h2 class="font-display font-black text-2xl sm:text-3xl text-[var(--color-ink)] tracking-tight">
     {isTagFilter
-      ? 'Brak wpisów w wybranej kategorii'
-      : 'Dziennik w przygotowaniu — oczekiwanie na pierwszy wpis'}
+      ? 'Brak zrzutów danych w wybranej magistrali'
+      : 'Dziennik w trybie nasłuchu — oczekiwanie na pierwszy pakiet'}
   </h2>
 
-  <div class="my-8 border border-[var(--color-border)] bg-[var(--bg-paper)] p-4 overflow-hidden flex items-center justify-center">
-    <AsciiArt seed="empty-journal-blankeu" cols={52} rows={12} style="dither-cluster" themeColor="blue" />
+  <!-- Matryca ASCII stanu spoczynkowego -->
+  <div class="my-6 border border-[var(--color-border)] bg-[var(--bg-canvas)] p-3 overflow-hidden flex items-center justify-center">
+    <AsciiArt seed="empty-journal-diagnostic" cols={48} rows={10} style="dither-cluster" themeColor="green" />
   </div>
 
-  <div class="font-body text-base sm:text-lg text-[var(--color-ink-muted)] leading-relaxed space-y-4 max-w-2xl">
+  <div class="font-body text-sm sm:text-base text-[var(--color-ink-muted)] leading-relaxed space-y-3 max-w-2xl">
     {message ? (
       <p>{message}</p>
     ) : (
       <>
         <p>
-          Ten dziennik to przestrzeń na surowe notatki warsztatowe, proces twórczy, prototypy urządzeń, eksperymenty z agentami AI oraz modele CAD i druk 3D.
+          Ten devlog jest surowym poligonem inżynierskim na kody źródłowe, telemetryczne zrzuty pamięci, dokumentację prototypów fizycznych ESP32, reverse-engineering oraz eksperymenty z agentami programistycznymi.
         </p>
-        <p class="text-sm font-mono text-[var(--color-ink)]">
-          Aby dodać pierwszy wpis, zaloguj się do panelu <strong>Pages CMS</strong> powiązanego z repozytorium GitHub lub dodaj plik Markdown w katalogu <code>src/content/posts/</code>.
+        <p class="font-mono text-xs text-[var(--color-ink)] bg-[var(--bg-canvas)] p-3 border border-[var(--color-border)]">
+          [INSTRUKCJA] Aby zarejestrować pierwszy wpis produkcyjny, zaloguj się do panelu <strong>Pages CMS</strong> powiązanego z gałęzią <code>main</code> lub dodaj plik Markdown w <code>src/content/posts/</code>.
         </p>
       </>
     )}
   </div>
 
-  <div class="mt-8 pt-6 border-t border-[var(--color-border)] flex flex-wrap gap-4 font-mono text-xs">
+  <!-- Przyciski wykonawcze -->
+  <div class="mt-8 pt-5 border-t border-[var(--color-border)] flex flex-wrap gap-3 font-mono text-xs">
     <a
       href="https://app.pagescms.org/"
       target="_blank"
       rel="noopener noreferrer"
-      class="px-4 py-2 border-2 border-[var(--color-blue)] text-[var(--color-blue)] hover:bg-[var(--color-blue)] hover:text-white transition-colors"
+      class="px-4 py-2 bg-[var(--color-green)] text-black font-bold hover:bg-white transition-colors flex items-center gap-1.5"
     >
-      OTWÓRZ PAGES CMS ↗
+      <span>[OTWÓRZ PAGES CMS]</span>
+      <span>↗</span>
     </a>
     <a
       href={SITE.portfolio}
       target="_blank"
       rel="noopener noreferrer"
-      class="px-4 py-2 border border-[var(--color-border)] hover:bg-[var(--color-accent-soft)] transition-colors"
+      class="px-4 py-2 border border-[var(--color-border)] hover:border-[var(--color-green)] hover:text-[var(--color-green)] transition-colors"
     >
-      ZOBACZ MAKER PORTFOLIO ↗
+      [PORTFOLIO ZEWNĘTRZNE ↗]
     </a>
   </div>
 </section>

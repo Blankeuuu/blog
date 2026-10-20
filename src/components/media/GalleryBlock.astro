@@ -30,8 +30,8 @@ const gridCols =
   <div class:list={['grid gap-4 sm:gap-6', gridCols]}>
     {images.map((item, idx) => (
       <div class="relative">
-        <span class="absolute top-2 left-2 z-10 font-mono text-[9px] bg-[var(--bg-paper)]/90 px-1 py-0.5 border border-[var(--color-border)] text-[var(--color-magenta)]">
-          {String(idx + 1).padStart(2, '0')}
+        <span class="absolute top-2 left-2 z-10 font-mono text-[9px] bg-[var(--bg-canvas)]/90 px-1 py-0.5 border border-[var(--color-border)] text-[var(--color-green)]">
+          FRAME_{String(idx + 1).padStart(2, '0')}
         </span>
         <ImageBlock image={item.image} alt={item.alt} caption={item.caption} width="tekst" />
       </div>
@@ -39,7 +39,7 @@ const gridCols =
   </div>
   {caption && (
     <div class="mt-3 text-center text-xs font-mono text-[var(--color-ink-muted)]">
-      <span class="text-[var(--color-blue)]">[GALERIA]</span> {caption}
+      <span class="text-[var(--color-green)] font-bold">[PANEL_MATRIX]</span> {caption}
     </div>
   )}
 </section>

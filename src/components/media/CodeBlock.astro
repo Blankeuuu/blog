@@ -13,51 +13,65 @@ const { code = '', language = 'text', filename } = Astro.props;
 const lang = language === 'text' ? 'plaintext' : language;
 ---
 
-<div class="my-8 max-w-4xl mx-auto border-2 border-[var(--color-border)] bg-[var(--color-card)] overflow-hidden">
-  <!-- Belka nagłówka kodu -->
-  <div class="flex items-center justify-between px-4 py-2 bg-[var(--color-grid)] border-b border-[var(--color-border)] font-mono text-xs">
+<div class="my-8 max-w-4xl mx-auto terminal-window border border-[var(--color-border)] bg-[var(--bg-surface)] overflow-hidden corner-brackets">
+  <!-- Belka nagłówka kodu: Retro OS titlebar & memory offset -->
+  <div class="flex items-center justify-between px-3 sm:px-4 py-2 bg-[var(--bg-canvas)] border-b border-[var(--color-border)] font-mono text-xs">
     <div class="flex items-center gap-2">
-      <span class="inline-block w-2.5 h-2.5 bg-[var(--color-magenta)]"></span>
+      <span class="inline-block w-2.5 h-2.5 bg-[var(--color-green)]"></span>
       {filename ? (
         <span class="font-bold text-[var(--color-ink)]">{filename}</span>
       ) : (
-        <span class="text-[var(--color-ink-muted)]">KOD</span>
+        <span class="text-[var(--color-ink-muted)]">SOURCE_BUFFER</span>
       )}
-      <span class="text-[10px] uppercase px-1.5 py-0.2 border border-[var(--color-border)] text-[var(--color-blue)]">
+      <span class="text-[10px] uppercase px-1.5 py-0.2 border border-[var(--color-border)] text-[var(--color-green)]">
         {language}
+      </span>
+      <span class="hidden sm:inline text-[9px] text-[var(--color-ink-muted)]">
+        [OFFSET: 0x0000]
       </span>
     </div>
 
-    <!-- Przycisk kopiowania kodu -->
-    <button
-      type="button"
-      class="copy-code-btn px-2 py-0.5 border border-[var(--color-border)] hover:bg-[var(--color-accent-soft)] transition-colors text-[11px]"
-      data-code={code}
-      aria-label="Kopiuj kod do schowka"
-    >
-      KOPIUJ
-    </button>
+    <!-- Przyciski i kopiowanie -->
+    <div class="flex items-center gap-3">
+      <button
+        type="button"
+        class="copy-code-btn px-2.5 py-0.5 border border-[var(--color-border)] hover:border-[var(--color-green)] hover:text-[var(--color-green)] transition-colors text-[10px] font-bold text-[var(--color-ink)] bg-[var(--bg-surface)]"
+        data-code={code}
+        aria-label="Kopiuj zawartość bufora do schowka"
+      >
+        [COPY_BUFFER]
+      </button>
+
+      <div class="hidden sm:flex items-center gap-1 text-[9px] text-[var(--color-ink-muted)]" aria-hidden="true">
+        <span>_</span>
+        <span>[]</span>
+        <span>X</span>
+      </div>
+    </div>
   </div>
 
-  <!-- Zawartość kodu -->
-  <div class="p-4 overflow-x-auto text-xs sm:text-sm font-mono leading-relaxed">
+  <!-- Zawartość kodu w stylizacji debugera -->
+  <div class="p-4 overflow-x-auto text-xs sm:text-sm font-mono leading-relaxed bg-[#0d1117]">
     <Code code={code} lang={lang as any} theme="github-dark-dimmed" />
   </div>
 </div>
 
 <script>
+  import { playBleep } from '../../lib/audio';
+
   function initCopyButtons() {
     document.querySelectorAll<HTMLButtonElement>('.copy-code-btn').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const text = btn.dataset.code || '';
         try {
           await navigator.clipboard.writeText(text);
+          playBleep(1200, 0.05);
           const original = btn.textContent;
-          btn.textContent = 'SKOPIOWANO [✓]';
-          btn.classList.add('text-[var(--color-magenta)]');
+          btn.textContent = '[COPIED_OK ✓]';
+          btn.classList.add('text-[var(--color-green)]', 'border-[var(--color-green)]');
           setTimeout(() => {
             btn.textContent = original;
-            btn.classList.remove('text-[var(--color-magenta)]');
+            btn.classList.remove('text-[var(--color-green)]', 'border-[var(--color-green)]');
           }, 2000);
         } catch (err) {
           console.error('Błąd kopiowania:', err);

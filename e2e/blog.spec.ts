@@ -75,6 +75,6 @@ test.describe('Blog Szymona Potyry — E2E', () => {
     }
 
     await expect(page).toHaveURL(/.*\/archiwum\/?/);
-    await expect(page.locator('h1')).toContainText('Archiwum chronologiczne');
+    await expect(page.locator('h1')).toContainText('Archiwum');
   });
 });

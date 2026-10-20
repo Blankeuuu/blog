@@ -24,7 +24,12 @@ const containerWidth =
 ---
 
 <figure class:list={['my-8', containerWidth]}>
-  <div class="relative overflow-hidden border border-[var(--color-border)] bg-[var(--color-grid)] group">
+  <div class="terminal-window relative overflow-hidden border border-[var(--color-border)] bg-[var(--bg-canvas)] group corner-brackets">
+    <!-- Etykieta kalibracji obrazu (z referencji 3) -->
+    <div class="absolute top-2 left-2 z-10 font-mono text-[9px] text-[var(--color-green)] bg-[var(--bg-canvas)]/85 px-1.5 py-0.5 border border-[var(--color-border)]" aria-hidden="true">
+      FRAME_OPTIC // CALIB: 58.64896, -146.83960
+    </div>
+
     {imageMeta ? (
       <Image
         src={imageMeta}
@@ -33,7 +38,7 @@ const containerWidth =
         sizes="(max-width: 640px) 100vw, (max-width: 1280px) 90vw, 1280px"
         format="webp"
         quality={88}
-        class="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.01]"
+        class="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-[1.01]"
         loading="lazy"
         decoding="async"
       />
@@ -41,7 +46,7 @@ const containerWidth =
       <img
         src={fallbackSrc}
         alt={alt}
-        class="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.01]"
+        class="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-[1.01]"
         loading="lazy"
         decoding="async"
       />
@@ -49,7 +54,7 @@ const containerWidth =
   </div>
   {caption && (
     <figcaption class="mt-2 text-xs font-mono text-[var(--color-ink-muted)] flex items-center gap-2">
-      <span class="text-[var(--color-magenta)]">[FIG]</span>
+      <span class="text-[var(--color-green)] font-bold">[FIG_FRAME]</span>
       <span>{caption}</span>
     </figcaption>
   )}

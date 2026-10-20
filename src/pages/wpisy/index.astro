@@ -11,44 +11,44 @@ const hasPosts = posts.length > 0;
 ---
 
 <BaseLayout
-  title="Wszystkie wpisy"
-  description="Pełna lista artykułów, notatek technicznych i devlogów Szymona Potyry."
+  title="Rejestr pakietów"
+  description="Pełny rejestr zrzutów pamięci, notatek technicznych i devlogów Szymona Potyry."
 >
   <div class="max-w-7xl mx-auto px-4 sm:px-8 py-12">
-    <!-- Nagłówek sekcji w stylu zine -->
-    <header class="border-b-2 border-[var(--color-blue)] pb-6 mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <!-- Nagłówek sekcji w stylu rejestru laboratoryjnego -->
+    <header class="border-b border-[var(--color-border)] pb-6 mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
       <div>
-        <div class="flex items-center gap-2 font-mono text-xs text-[var(--color-magenta)]">
-          <span class="inline-block w-2.5 h-2.5 bg-[var(--color-magenta)]"></span>
-          <span>[INDEKS / WYDANIA]</span>
+        <div class="flex items-center gap-2 font-mono text-xs text-[var(--color-green)] mb-1">
+          <span class="inline-block w-2.5 h-2.5 bg-[var(--color-green)]"></span>
+          <span>[STREAM_INDEX // WSZYSTKIE PAKIETY DANYCH]</span>
         </div>
-        <h1 class="font-display font-black text-4xl sm:text-5xl text-[var(--color-ink)] tracking-tight mt-1">
-          Wszystkie wpisy
+        <h1 class="font-display font-black text-4xl sm:text-5xl text-[var(--color-ink)] tracking-tight">
+          Rejestr wpisów
         </h1>
       </div>
 
       <div class="flex items-center gap-4 font-mono text-xs">
-        <span class="text-[var(--color-ink-muted)]">LICZBA WPISÓW: <strong>{posts.length}</strong></span>
+        <span class="text-[var(--color-ink-muted)]">REKORDY: <strong class="text-[var(--color-green)]">{posts.length}</strong></span>
         <button
           type="button"
           data-search-trigger
-          class="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-accent-soft)] text-[var(--color-blue)] transition-colors flex items-center gap-1.5"
+          class="px-3 py-1.5 border border-[var(--color-border)] hover:border-[var(--color-green)] hover:text-[var(--color-green)] text-[var(--color-ink)] transition-colors flex items-center gap-1.5 bg-[var(--bg-surface)]"
         >
-          <span>SZUKAJ</span>
-          <kbd class="text-[9px] px-1 border border-[var(--color-border)]">Ctrl+K</kbd>
+          <span>[CMD: SZUKAJ]</span>
+          <kbd class="text-[9px] px-1 border border-[var(--color-border)]">^K</kbd>
         </button>
       </div>
     </header>
 
-    <!-- Filtry tagów -->
+    <!-- Zworki magistrali / Filtry tagów -->
     <nav aria-label="Filtry tagów" class="mb-10 flex flex-wrap gap-2 font-mono text-xs">
-      <span class="py-1 text-[var(--color-ink-muted)] mr-2">FILTRUJ:</span>
+      <span class="py-1 text-[var(--color-ink-muted)] mr-2">[FILTRUJ MAGISTRALĘ]:</span>
       {TAGS.map((t) => (
         <a
           href={getTagUrl(t.slug)}
-          class="px-2.5 py-1 border border-[var(--color-border)] bg-[var(--bg-paper)] text-[var(--color-ink)] hover:border-[var(--color-magenta)] hover:text-[var(--color-magenta)] transition-colors"
+          class="px-2.5 py-1 border border-[var(--color-border)] bg-[var(--bg-surface)] text-[var(--color-ink)] hover:border-[var(--color-green)] hover:text-[var(--color-green)] transition-colors"
         >
-          #{t.short} {t.label}
+          [JMP_{t.short.toUpperCase()}] {t.label}
         </a>
       ))}
     </nav>

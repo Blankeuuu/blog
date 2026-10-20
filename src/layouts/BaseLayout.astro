@@ -56,94 +56,118 @@ const resolvedOgImage = ogImage ? (ogImage.startsWith('http') ? ogImage : absolu
     <link rel="alternate" type="application/rss+xml" title={`${SITE.name} (RSS 2.0)`} href={getRssUrl()} />
     <link rel="sitemap" href={resolvePath('/sitemap-index.xml')} />
 
-    <!-- Inline script zapobiegający mignięciu motywu (FOUC) -->
+    <!-- Inline script zapobiegający mignięciu motywu (Domyślnie Dark Terminal) -->
     <script is:inline>
       (function() {
         const stored = localStorage.getItem('blankeu-theme');
-        if (stored === 'dark' || stored === 'light') {
-          document.documentElement.setAttribute('data-theme', stored);
+        if (stored === 'light') {
+          document.documentElement.setAttribute('data-theme', 'light');
         } else {
-          // Śledź preferencje systemowe
-          const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', 'dark');
         }
       })();
     </script>
   </head>
 
-  <body class="min-h-screen bg-[var(--bg-paper)] text-[var(--color-ink)] selection:bg-[var(--color-magenta)] selection:text-white flex flex-col font-body">
-    <!-- Górny pasek z informacjami zine / telemetry -->
-    <aside aria-label="Informacje nagłówka" class="border-b border-[var(--color-border)] bg-[var(--color-grid)] text-[10px] font-mono py-1 px-4 flex justify-between items-center text-[var(--color-ink-muted)]">
+  <body class="min-h-screen bg-[var(--bg-canvas)] text-[var(--color-ink)] selection:bg-[var(--color-green)] selection:text-black flex flex-col font-body bg-grid-blueprint relative">
+    <!-- Pasek górny telemetrii i stanu jądra -->
+    <aside aria-label="Telemetria jądra i status operacyjny" class="border-b border-[var(--color-border)] bg-[var(--bg-surface)] text-[10px] font-mono py-1 px-3 sm:px-6 flex flex-wrap justify-between items-center text-[var(--color-ink-muted)] z-50">
       <div class="flex items-center gap-3">
-        <span class="inline-block w-2 h-2 rounded-full bg-[var(--color-magenta)] animate-pulse" aria-hidden="true"></span>
-        <span class="tracking-wider">SYS.JOURNAL // REV.2026</span>
-        <span class="hidden sm:inline">|</span>
-        <span class="hidden sm:inline">AUTOR: {SITE.author.toUpperCase()}</span>
+        <span class="inline-block w-2 h-2 bg-[var(--color-green)] animate-pulse" aria-hidden="true"></span>
+        <span class="text-[var(--color-green)] font-bold tracking-wider">SYS_MONITOR // KERNEL v7.4.2</span>
+        <span class="hidden md:inline text-[var(--color-border)]">|</span>
+        <span class="hidden md:inline">MEM: 98% ALLOC</span>
+        <span class="hidden lg:inline text-[var(--color-border)]">|</span>
+        <span class="hidden lg:inline">COORDS: 52.2297°N 21.0122°E</span>
+        <span class="hidden xl:inline text-[var(--color-border)]">|</span>
+        <span class="hidden xl:inline">BAUD: 115200</span>
       </div>
-      <div class="flex items-center gap-4">
-        <a href={SITE.portfolio} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-blue)] transition-colors">
-          MAKER PORTFOLIO ↗
+
+      <div class="flex items-center gap-3 sm:gap-4 mt-1 sm:mt-0">
+        <!-- Zegar UTC na żywo -->
+        <span id="utc-clock" class="text-[var(--color-ink)] font-bold">UTC: --:--:--</span>
+
+        <!-- Przełącznik Audio Web Audio API -->
+        <button
+          type="button"
+          id="audio-toggle-btn"
+          class="px-1.5 py-0.5 border border-[var(--color-border)] hover:border-[var(--color-green)] hover:text-[var(--color-green)] transition-colors text-[9px] uppercase"
+          title="Przełącznik dźwięków terminala"
+        >
+          <span id="audio-toggle-label">[AUDIO: OFF]</span>
+        </button>
+
+        <!-- Przełącznik motywu: CRT Terminal / Laboratory Schematic -->
+        <button
+          type="button"
+          id="theme-toggle-btn"
+          class="px-1.5 py-0.5 border border-[var(--color-border)] hover:border-[var(--color-green)] hover:text-[var(--color-green)] transition-colors text-[9px] uppercase"
+          title="Przełącznik motywu: Terminal CRT / Schemat Laboratoryjny"
+        >
+          <span id="theme-toggle-label">[THEME: CRT]</span>
+        </button>
+
+        <a
+          href={SITE.portfolio}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-[var(--color-green)] transition-colors hidden sm:inline"
+        >
+          PORTFOLIO ↗
         </a>
       </div>
     </aside>
 
-    <!-- Główny nagłówek strony -->
-    <header class="border-b-2 border-[var(--color-blue)] sticky top-0 z-40 bg-[var(--bg-paper)]/95 backdrop-blur-md px-4 sm:px-8 py-3 transition-colors">
+    <!-- Główny nagłówek konsoli (Terminal Window Header) -->
+    <header class="border-b border-[var(--color-border)] sticky top-0 z-40 bg-[var(--bg-surface)]/95 backdrop-blur-md px-4 sm:px-8 py-2.5 transition-colors">
       <div class="max-w-7xl mx-auto flex items-center justify-between">
-        <!-- Logo / Brandmark -->
-        <a href={resolvePath('/')} class="group flex items-baseline gap-2">
-          <span class="font-display font-black text-2xl sm:text-3xl tracking-tight text-[var(--color-ink)] group-hover:text-[var(--color-magenta)] transition-colors">
-            {SITE.name}
-          </span>
-          <span class="hidden md:inline font-mono text-[10px] px-1.5 py-0.5 border border-[var(--color-border)] text-[var(--color-blue)]">
-            DEVLOG
-          </span>
+        <!-- Brand / Stacja diagnostyczna -->
+        <a href={resolvePath('/')} class="group flex items-center gap-3 focus:outline-none">
+          <div class="w-3 h-3 bg-[var(--color-green)] group-hover:bg-[var(--color-red)] transition-colors"></div>
+          <div>
+            <div class="font-display font-black text-xl sm:text-2xl tracking-tighter text-[var(--color-ink)] group-hover:text-[var(--color-green)] transition-colors flex items-baseline gap-2">
+              <span>{SITE.name}</span>
+              <span class="text-[10px] font-mono px-1 border border-[var(--color-green)] text-[var(--color-green)] font-normal">
+                v7.4
+              </span>
+            </div>
+            <div class="font-mono text-[9px] text-[var(--color-ink-muted)] tracking-wider">
+              EXPERIMENTAL JOURNAL // SZYMON POTYRA
+            </div>
+          </div>
         </a>
 
-        <!-- Nawigacja główna -->
-        <nav aria-label="Menu główne" class="hidden md:flex items-center gap-6 font-mono text-xs">
+        <!-- Menu poleceń terminala (Desktop) -->
+        <nav aria-label="Menu główne" class="hidden md:flex items-center gap-4 lg:gap-6 font-mono text-xs">
           <a
             href={getPostsUrl()}
-            class="hover:text-[var(--color-magenta)] hover:underline decoration-2 underline-offset-4 transition-colors"
+            class="px-2 py-1 hover:text-[var(--color-green)] hover:border-b-2 hover:border-[var(--color-green)] transition-colors"
           >
-            WPISY
+            [01/WPISY]
           </a>
           <a
             href={getTagUrl('')}
-            class="hover:text-[var(--color-magenta)] hover:underline decoration-2 underline-offset-4 transition-colors"
+            class="px-2 py-1 hover:text-[var(--color-green)] hover:border-b-2 hover:border-[var(--color-green)] transition-colors"
           >
-            TEMATY
+            [02/TEMATY]
           </a>
           <a
             href={getArchiveUrl()}
-            class="hover:text-[var(--color-magenta)] hover:underline decoration-2 underline-offset-4 transition-colors"
+            class="px-2 py-1 hover:text-[var(--color-green)] hover:border-b-2 hover:border-[var(--color-green)] transition-colors"
           >
-            ARCHIWUM
+            [03/ARCHIWUM]
           </a>
 
-          <!-- Wyszukiwarka -->
+          <!-- Przycisk wyszukiwarki -->
           <button
             type="button"
             data-search-trigger
-            class="flex items-center gap-1.5 px-2.5 py-1 border border-[var(--color-border)] text-[var(--color-blue)] hover:border-[var(--color-magenta)] hover:text-[var(--color-magenta)] transition-colors"
-            title="Szukaj (Ctrl+K)"
+            class="flex items-center gap-1.5 px-2.5 py-1 border border-[var(--color-border)] text-[var(--color-green)] hover:bg-[var(--color-green)] hover:text-black transition-colors"
+            title="Szukaj w rejestrze (Ctrl+K)"
           >
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            <span class="text-[10px]">CMD:</span>
             <span>SZUKAJ</span>
-            <kbd class="text-[9px] px-1 border border-[var(--color-border)]">^K</kbd>
-          </button>
-
-          <!-- Przełącznik motywu -->
-          <button
-            type="button"
-            id="theme-toggle-btn"
-            class="p-1.5 border border-[var(--color-border)] hover:bg-[var(--color-accent-soft)] transition-colors text-[var(--color-ink)]"
-            aria-label="Przełącz motyw jasny/ciemny"
-          >
-            <span class="sr-only">Motyw</span>
-            <span id="theme-toggle-icon" class="text-xs">🌓</span>
+            <kbd class="text-[9px] px-1 bg-[var(--bg-canvas)] text-[var(--color-ink)] border border-[var(--color-border)]">^K</kbd>
           </button>
         </nav>
 
@@ -152,48 +176,46 @@ const resolvedOgImage = ogImage ? (ogImage.startsWith('http') ? ogImage : absolu
           <button
             type="button"
             data-search-trigger
-            class="p-2 border border-[var(--color-border)] text-[var(--color-blue)]"
+            class="p-2 border border-[var(--color-border)] text-[var(--color-green)] text-xs font-mono"
             aria-label="Szukaj"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            ^K
           </button>
           <button
             type="button"
             id="mobile-menu-btn"
-            class="p-2 border border-[var(--color-blue)] font-mono text-xs font-bold"
+            class="px-3 py-1.5 border border-[var(--color-green)] font-mono text-xs text-[var(--color-green)] font-bold"
             aria-label="Otwórz menu nawigacji"
             aria-expanded="false"
           >
-            MENU
+            [MENU]
           </button>
         </div>
       </div>
 
       <!-- Rozwijane menu mobilne -->
-      <div id="mobile-menu" class="hidden md:hidden pt-4 pb-2 border-t border-[var(--color-border)] mt-3">
-        <nav aria-label="Menu mobilne" class="flex flex-col gap-3 font-mono text-sm">
-          <a href={getPostsUrl()} class="px-2 py-1.5 hover:bg-[var(--color-accent-soft)]">
-            [1] WPISY
+      <div id="mobile-menu" class="hidden md:hidden pt-3 pb-2 border-t border-[var(--color-border)] mt-2 font-mono text-xs">
+        <nav aria-label="Menu mobilne" class="flex flex-col gap-2">
+          <a href={getPostsUrl()} class="px-2 py-1.5 border border-[var(--color-border)] hover:text-[var(--color-green)]">
+            [01] REJESTR WPISÓW
           </a>
-          <a href={getTagUrl('')} class="px-2 py-1.5 hover:bg-[var(--color-accent-soft)]">
-            [2] TEMATY
+          <a href={getTagUrl('')} class="px-2 py-1.5 border border-[var(--color-border)] hover:text-[var(--color-green)]">
+            [02] MAGISTRALA TEMATÓW
           </a>
-          <a href={getArchiveUrl()} class="px-2 py-1.5 hover:bg-[var(--color-accent-soft)]">
-            [3] ARCHIWUM
+          <a href={getArchiveUrl()} class="px-2 py-1.5 border border-[var(--color-border)] hover:text-[var(--color-green)]">
+            [03] PEŁNE ARCHIWUM DANYCH
           </a>
-          <a href={SITE.portfolio} target="_blank" rel="noopener noreferrer" class="px-2 py-1.5 text-[var(--color-blue)]">
-            [↗] PORTFOLIO
+          <a href={SITE.portfolio} target="_blank" rel="noopener noreferrer" class="px-2 py-1.5 border border-[var(--color-border)] text-[var(--color-blue)]">
+            [↗] MAKER PORTFOLIO
           </a>
           <div class="pt-2 border-t border-[var(--color-border)] flex justify-between items-center px-2">
             <span class="text-xs text-[var(--color-ink-muted)]">MOTYW:</span>
             <button
               type="button"
               id="mobile-theme-toggle"
-              class="px-2 py-1 border border-[var(--color-border)] text-xs"
+              class="px-2 py-1 border border-[var(--color-border)] text-xs text-[var(--color-green)]"
             >
-              PRZEŁĄCZ 🌓
+              PRZEŁĄCZ CRT/SPEC 🌓
             </button>
           </div>
         </nav>
@@ -205,68 +227,81 @@ const resolvedOgImage = ogImage ? (ogImage.startsWith('http') ? ogImage : absolu
       <slot />
     </main>
 
-    <!-- Stopka autorska i kontaktowa -->
-    <footer class="border-t-2 border-[var(--color-blue)] bg-[var(--bg-paper)] mt-24 py-12 px-4 sm:px-8">
-      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-xs font-mono">
-        <!-- Kolumna 1: Tożsamość -->
-        <div class="space-y-3">
-          <div class="font-display font-black text-lg text-[var(--color-magenta)]">
-            {SITE.wordmark} // JOURNAL
-          </div>
-          <p class="text-[var(--color-ink-muted)] leading-relaxed font-body text-sm">
-            Eksperymentalny osobisty devlog Szymona Potyry. Połączenie estetyki risograph, breakcore oraz szwajcarskiej dyscypliny typograficznej.
-          </p>
-          <div class="text-[var(--color-ink-muted)]">
-            &copy; {new Date().getFullYear()} {SITE.author}. Wszelkie prawa zastrzeżone.
-          </div>
+    <!-- Techniczna stopka inżynieryjna ze schematem pinoutu PCB -->
+    <footer class="border-t border-[var(--color-border)] bg-[var(--bg-surface)] mt-24 py-12 px-4 sm:px-8 font-mono text-xs">
+      <div class="max-w-7xl mx-auto space-y-8">
+        <!-- Górna listwa schematu: pinout & memory mapping -->
+        <div class="p-4 border border-[var(--color-border)] bg-[var(--bg-canvas)] overflow-x-auto text-[10px] text-[var(--color-ink-muted)] leading-relaxed select-none" aria-hidden="true">
+          <div class="text-[var(--color-green)] font-bold mb-1">[SCHEMATIC_MAP // SYSTEM BUS PINOUT]</div>
+          <pre class="m-0 font-mono">
+PIN01: VCC_3V3  [OK] | PIN07: SPI_MISO [ACTIVE] | PIN14: CLOCK_14.3MHz [SYNC]  | PIN21: IRQ_VECTOR [0x3F]
+PIN02: GND_REF  [OK] | PIN08: SPI_MOSI [ACTIVE] | PIN15: RESET_INVERSE [HIGH]  | PIN22: MEM_DUMP   [100%]
+PIN03: UART_TXD [OK] | PIN09: SPI_CLK  [100MHz] | PIN16: DEBUG_SWDIO   [LOCKED]| PIN23: AUDIO_DAC  [SYNTH]
+PIN04: UART_RXD [OK] | PIN10: I2C_SDA  [PULLUP] | PIN17: FAULT_NONPAGE [CLEAR] | PIN24: STATUS_LED [PULSE]
+          </pre>
         </div>
 
-        <!-- Kolumna 2: Kontakt & Sieć -->
-        <div class="space-y-2">
-          <div class="text-[var(--color-blue)] font-bold tracking-wider">[KONTAKT & SIEĆ]</div>
-          <ul class="space-y-1.5">
-            <li>
-              <span class="text-[var(--color-ink-muted)]">E-MAIL:</span>{' '}
-              <a href={`mailto:${SITE.email}`} class="underline hover:text-[var(--color-magenta)]">
-                {SITE.email}
-              </a>
-            </li>
-            <li>
-              <span class="text-[var(--color-ink-muted)]">GITHUB:</span>{' '}
-              <a href={SITE.github} target="_blank" rel="noopener noreferrer" class="underline hover:text-[var(--color-magenta)]">
-                {SITE.githubLogin}
-              </a>
-            </li>
-            <li>
-              <span class="text-[var(--color-ink-muted)]">PORTFOLIO:</span>{' '}
-              <a href={SITE.portfolio} target="_blank" rel="noopener noreferrer" class="underline hover:text-[var(--color-magenta)]">
-                blankeuuu.github.io/portfolio/
-              </a>
-            </li>
-            <li>
-              <span class="text-[var(--color-ink-muted)]">KANAŁ:</span>{' '}
-              <a href={getRssUrl()} class="underline hover:text-[var(--color-magenta)]">
-                RSS Feed (XML)
-              </a>
-            </li>
-          </ul>
-        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-xs">
+          <!-- Kolumna 1: Tożsamość i status -->
+          <div class="space-y-3">
+            <div class="font-display font-black text-lg text-[var(--color-green)]">
+              {SITE.wordmark} // SYSTEM DECK
+            </div>
+            <p class="text-[var(--color-ink-muted)] leading-relaxed font-body text-sm">
+              Eksperymentalny dziennik inżynieryjny i devlog Szymona Potyry. Surowy poligon sprzętowo-programistyczny, generatywne ASCII, mikrokontrolery, agenci AI oraz prototypy fizyczne.
+            </p>
+            <div class="text-[10px] text-[var(--color-ink-muted)]">
+              &copy; {new Date().getFullYear()} {SITE.author}. ALL SYSTEMS NOMINAL.
+            </div>
+          </div>
 
-        <!-- Kolumna 3: Stack & CMS -->
-        <div class="space-y-2">
-          <div class="text-[var(--color-blue)] font-bold tracking-wider">[ARCHITEKTURA]</div>
-          <p class="text-[var(--color-ink-muted)] leading-relaxed">
-            Statyczna kompilacja Astro 7, Tailwind CSS v4, Pages CMS, Pagefind Search. Hostowane na GitHub Pages.
-          </p>
-          <div class="pt-2">
-            <a
-              href="https://app.pagescms.org/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-block px-2 py-1 border border-[var(--color-border)] hover:bg-[var(--color-accent-soft)] text-[11px]"
-            >
-              PAGES CMS LOGIN ↗
-            </a>
+          <!-- Kolumna 2: Kanały komunikacji -->
+          <div class="space-y-2">
+            <div class="text-[var(--color-green)] font-bold tracking-wider">[COMM_CHANNELS]</div>
+            <ul class="space-y-1.5">
+              <li>
+                <span class="text-[var(--color-ink-muted)]">MAIL:</span>{' '}
+                <a href={`mailto:${SITE.email}`} class="underline hover:text-[var(--color-green)]">
+                  {SITE.email}
+                </a>
+              </li>
+              <li>
+                <span class="text-[var(--color-ink-muted)]">GITHUB:</span>{' '}
+                <a href={SITE.github} target="_blank" rel="noopener noreferrer" class="underline hover:text-[var(--color-green)]">
+                  {SITE.githubLogin}
+                </a>
+              </li>
+              <li>
+                <span class="text-[var(--color-ink-muted)]">PORTFOLIO:</span>{' '}
+                <a href={SITE.portfolio} target="_blank" rel="noopener noreferrer" class="underline hover:text-[var(--color-green)]">
+                  blankeuuu.github.io/portfolio/
+                </a>
+              </li>
+              <li>
+                <span class="text-[var(--color-ink-muted)]">FEED_STREAM:</span>{' '}
+                <a href={getRssUrl()} class="underline hover:text-[var(--color-green)]">
+                  rss.xml (RAW_FEED)
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Kolumna 3: Architektura & CMS -->
+          <div class="space-y-2">
+            <div class="text-[var(--color-green)] font-bold tracking-wider">[RUNTIME_ENVIRONMENT]</div>
+            <p class="text-[var(--color-ink-muted)] leading-relaxed text-[11px]">
+              Engine: Astro 7 SSG // Styling: Tailwind v4 // CMS: Pages CMS // Index: Pagefind Polish // Deploy: GitHub Pages.
+            </p>
+            <div class="pt-2">
+              <a
+                href="https://app.pagescms.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-block px-3 py-1.5 border border-[var(--color-green)] text-[var(--color-green)] hover:bg-[var(--color-green)] hover:text-black font-bold text-[11px] transition-colors"
+              >
+                PAGES CMS LOGIN ↗
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -275,28 +310,92 @@ const resolvedOgImage = ogImage ? (ogImage.startsWith('http') ? ogImage : absolu
     <!-- Modal wyszukiwarki -->
     <SearchModal />
 
-    <!-- Skrypt obsługi menu i przełącznika motywów -->
+    <!-- Skrypty telemetryczne, audio i motywu -->
     <script>
+      import { isAudioEnabled, toggleAudio, playClick, playBleep } from '../lib/audio';
+
       function initLayoutScripts() {
         const mobileBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
         const themeBtn = document.getElementById('theme-toggle-btn');
         const mobileThemeBtn = document.getElementById('mobile-theme-toggle');
+        const themeLabel = document.getElementById('theme-toggle-label');
+        const audioBtn = document.getElementById('audio-toggle-btn');
+        const audioLabel = document.getElementById('audio-toggle-label');
+        const clockEl = document.getElementById('utc-clock');
 
+        // Zegar UTC na żywo
+        function updateClock() {
+          if (!clockEl) return;
+          const now = new Date();
+          const h = String(now.getUTCHours()).padStart(2, '0');
+          const m = String(now.getUTCMinutes()).padStart(2, '0');
+          const s = String(now.getUTCSeconds()).padStart(2, '0');
+          clockEl.textContent = `UTC: ${h}:${m}:${s}`;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Stan audio
+        function updateAudioLabel() {
+          if (!audioLabel) return;
+          const on = isAudioEnabled();
+          audioLabel.textContent = on ? '[AUDIO: ON]' : '[AUDIO: OFF]';
+          if (audioBtn) {
+            if (on) {
+              audioBtn.classList.add('border-[var(--color-green)]', 'text-[var(--color-green)]');
+            } else {
+              audioBtn.classList.remove('border-[var(--color-green)]', 'text-[var(--color-green)]');
+            }
+          }
+        }
+        updateAudioLabel();
+
+        audioBtn?.addEventListener('click', () => {
+          const enabled = toggleAudio();
+          updateAudioLabel();
+          if (enabled) {
+            playBleep(880, 0.05);
+          }
+        });
+
+        // Obsługa menu mobilnego
         mobileBtn?.addEventListener('click', () => {
+          playClick();
           const isHidden = mobileMenu?.classList.toggle('hidden');
           mobileBtn.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
         });
 
-        function toggleTheme() {
-          const current = document.documentElement.getAttribute('data-theme') || 'light';
+        // Przełącznik motywu (CRT Terminal / Laboratory Schematic)
+        function updateThemeLabel(theme: string) {
+          if (!themeLabel) return;
+          themeLabel.textContent = theme === 'light' ? '[THEME: SPEC]' : '[THEME: CRT]';
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        updateThemeLabel(currentTheme);
+
+        function triggerThemeToggle() {
+          playClick();
+          const current = document.documentElement.getAttribute('data-theme') || 'dark';
           const next = current === 'dark' ? 'light' : 'dark';
           document.documentElement.setAttribute('data-theme', next);
           localStorage.setItem('blankeu-theme', next);
+          updateThemeLabel(next);
         }
 
-        themeBtn?.addEventListener('click', toggleTheme);
-        mobileThemeBtn?.addEventListener('click', toggleTheme);
+        themeBtn?.addEventListener('click', triggerThemeToggle);
+        mobileThemeBtn?.addEventListener('click', triggerThemeToggle);
+
+        // Dźwięk kliku dla przycisków i linków nawigacji
+        document.querySelectorAll('a, button').forEach((el) => {
+          el.addEventListener('mouseenter', () => {
+            // Cichy mikro-impuls przy najechaniu na ważne przyciski
+            if (el.hasAttribute('data-search-trigger') || el.id === 'audio-toggle-btn' || el.id === 'theme-toggle-btn') {
+              playClick();
+            }
+          });
+        });
       }
 
       if (typeof document !== 'undefined') {

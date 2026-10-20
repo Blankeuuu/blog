@@ -18,7 +18,13 @@ const posterSrc = poster ? resolvePath(poster) : undefined;
 ---
 
 <figure class="my-10 max-w-4xl mx-auto" aria-label={`Wideo: ${title}`}>
-  <div class="relative overflow-hidden border-2 border-[var(--color-blue)] bg-black/90 aspect-video">
+  <div class="terminal-window relative overflow-hidden border border-[var(--color-border)] bg-black/90 aspect-video corner-brackets">
+    <!-- Pasek tytułowy strumienia AV -->
+    <div class="absolute top-2 left-2 z-20 font-mono text-[9px] text-[var(--color-green)] bg-[var(--bg-canvas)]/90 px-1.5 py-0.5 border border-[var(--color-border)] flex items-center gap-1.5">
+      <span class="w-1.5 h-1.5 bg-[var(--color-green)] inline-block"></span>
+      <span>AV_FEED // {youtubeId ? `YOUTUBE:${youtubeId}` : 'LOCAL_STREAM'}</span>
+    </div>
+
     {youtubeId ? (
       <div class="yt-container relative w-full h-full flex items-center justify-center group" data-yt-id={youtubeId}>
         <img
@@ -29,14 +35,14 @@ const posterSrc = poster ? resolvePath(poster) : undefined;
         />
         <button
           type="button"
-          class="yt-play-btn absolute inset-0 w-full h-full flex flex-col items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors focus:outline-none focus:ring-4 focus:ring-[var(--color-magenta)]"
+          class="yt-play-btn absolute inset-0 w-full h-full flex flex-col items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-green)]"
           aria-label={`Odtwórz wideo: ${title}`}
         >
-          <div class="w-16 h-12 bg-[var(--color-magenta)] text-white flex items-center justify-center font-mono font-bold text-sm tracking-wider shadow-lg transform group-hover:scale-110 transition-transform">
-            <span>&#9654; GRAJ</span>
+          <div class="px-5 py-2.5 bg-[var(--color-green)] text-black flex items-center justify-center font-mono font-bold text-xs tracking-wider shadow-lg transform group-hover:scale-105 transition-transform">
+            <span>[PLAY_STREAM &#9654;]</span>
           </div>
-          <span class="mt-3 font-mono text-xs text-white bg-black/70 px-2 py-0.5 border border-white/20">
-            KLIKNIJ ABY ZAŁADOWAĆ (YOUTUBE)
+          <span class="mt-2 font-mono text-[10px] text-[var(--color-green)] bg-black/80 px-2 py-0.5 border border-[var(--color-border)]">
+            CLICK TO INITIALIZE YOUTUBE BUFFER
           </span>
         </button>
       </div>
@@ -51,18 +57,18 @@ const posterSrc = poster ? resolvePath(poster) : undefined;
         Twoja przeglądarka nie obsługuje elementu wideo.
       </video>
     ) : (
-      <div class="w-full h-full flex items-center justify-center font-mono text-xs text-[var(--color-magenta)]">
-        [BRAK ŹRÓDŁA WIDEO]
+      <div class="w-full h-full flex items-center justify-center font-mono text-xs text-[var(--color-red)]">
+        [FAULT: BRAK ŹRÓDŁA WIDEO]
       </div>
     )}
   </div>
 
   <figcaption class="mt-2 text-xs font-mono text-[var(--color-ink-muted)] flex items-center justify-between">
     <div class="flex items-center gap-2">
-      <span class="text-[var(--color-blue)] font-bold">[WIDEO]</span>
+      <span class="text-[var(--color-green)] font-bold">[AV_CAPTION]</span>
       <span>{caption || title}</span>
     </div>
-    {youtubeId && <span class="text-[10px]">YouTube (prywatny embed)</span>}
+    {youtubeId && <span class="text-[10px] text-[var(--color-ink-muted)]">PRIVACY_NOCOOKIE</span>}
   </figcaption>
 </figure>
 
