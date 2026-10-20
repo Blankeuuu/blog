@@ -23,7 +23,6 @@ const posterSrc = poster ? resolvePath(poster) : undefined;
     <div class="absolute top-2 left-2 z-20 font-mono text-[9px] text-[var(--color-blood)] bg-[var(--bg-void)]/90 px-2 py-0.5 border border-[var(--color-blood)] flex items-center gap-1.5 font-bold">
       <span class="w-2 h-2 bg-[var(--color-blood)] inline-block animate-pulse"></span>
       <span>AV_FEED // {youtubeId ? `YOUTUBE:${youtubeId}` : 'LOCAL_STREAM'}</span>
-      <span class="text-xs ml-1" aria-hidden="true">🐜</span>
     </div>
 
     {youtubeId ? (
@@ -43,7 +42,7 @@ const posterSrc = poster ? resolvePath(poster) : undefined;
             <span>PLAY STREAM ▶</span>
           </div>
           <span class="mt-3 font-mono text-[10px] text-[var(--color-ink)] bg-black/90 px-2 py-0.5 border border-[var(--color-border)]">
-            CLICK TO INITIALIZE YOUTUBE BUFFER
+            KLIKNIJ, ABY ODTWORZYĆ
           </span>
         </button>
       </div>
@@ -66,10 +65,8 @@ const posterSrc = poster ? resolvePath(poster) : undefined;
 
   <figcaption class="mt-2 text-xs font-mono text-[var(--color-ink-muted)] flex items-center justify-between border-t border-[var(--color-border)] pt-1">
     <div class="flex items-center gap-2">
-      <span class="text-[var(--color-blood)] font-black">[AV_FEED]</span>
       <span>{caption || title}</span>
     </div>
-    {youtubeId && <span class="text-[10px] text-[var(--color-acid)] font-bold">和室 6帖 PRIVACY_NOCOOKIE</span>}
   </figcaption>
 </figure>
 

@@ -21,7 +21,7 @@ const lang = language === 'text' ? 'plaintext' : language;
       {filename ? (
         <span class="font-black text-[var(--color-ink)]">{filename}</span>
       ) : (
-        <span class="text-[var(--color-blood)] font-bold">MEMORY_DUMP.ASM</span>
+        <span class="text-[var(--color-blood)] font-bold">CODE</span>
       )}
       <span class="text-[10px] uppercase px-1.5 py-0.5 bg-[var(--bg-shard)] border border-[var(--color-border)] text-[var(--color-acid)] font-bold">
         {language}
@@ -39,10 +39,8 @@ const lang = language === 'text' ? 'plaintext' : language;
         data-code={code}
         aria-label="Kopiuj zawartość bufora do schowka"
       >
-        COPY DUMP
+        KOPIUJ
       </button>
-
-      <span class="text-xs hidden sm:inline" aria-hidden="true">🐜</span>
     </div>
   </div>
 
@@ -63,7 +61,7 @@ const lang = language === 'text' ? 'plaintext' : language;
           await navigator.clipboard.writeText(text);
           playBleep(1200, 0.05);
           const original = btn.textContent;
-          btn.textContent = 'DUMP COPIED ✓';
+          btn.textContent = 'SKOPIOWANO ✓';
           btn.classList.add('bg-[var(--color-blood)]', 'text-black');
           setTimeout(() => {
             btn.textContent = original;

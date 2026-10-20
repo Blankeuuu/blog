@@ -18,8 +18,8 @@ const hasPosts = posts.length > 0;
 ---
 
 <BaseLayout
-  title={`Klaster: ${currentTag.label} // RAW MATRIX`}
-  description={`Wpisy z klastra ${currentTag.label} — surowe notatki i projekty Szymona Potyry.`}
+  title={`Kategoria: ${currentTag.label}`}
+  description={`Wpisy z kategorii ${currentTag.label} — notatki i projekty Szymona Potyry.`}
 >
   <div class="relative max-w-7xl mx-auto px-4 sm:px-8 py-12 md:py-16">
     <!-- Laser ray background decoration -->
@@ -33,15 +33,12 @@ const hasPosts = posts.length > 0;
           <span class="text-[var(--color-blood)] font-black tracking-widest breakcore-glitch">
             FILTER://NODE_{currentTag.short.toUpperCase()}
           </span>
-          <span class="text-[var(--color-ink-muted)]">///</span>
-          <span class="text-[var(--color-acid)] font-bold">和室 6帖 MATRIX</span>
         </div>
 
         <div class="flex items-center gap-4 text-xs font-mono">
           <span class="text-[var(--color-ink-muted)]">
-            PAKIETY_DANYCH: <strong class="text-[var(--color-acid)]">{posts.length}</strong>
+            LICZBA WPISÓW: <strong class="text-[var(--color-acid)]">{posts.length}</strong>
           </span>
-          <span class="text-xs" aria-hidden="true">🐜</span>
         </div>
       </div>
 
@@ -50,16 +47,13 @@ const hasPosts = posts.length > 0;
           <h1 class="font-display font-black text-4xl sm:text-6xl text-[var(--color-ink)] tracking-tighter uppercase">
             {currentTag.label}
           </h1>
-          <p class="font-mono text-xs sm:text-sm text-[var(--color-ink-muted)] mt-2">
-            Strumień wyekstrahowanych rekordów dla węzła {currentTag.slug}.
-          </p>
         </div>
 
         <a
           href="/tag/"
           class="inline-block font-mono text-xs px-3 py-1.5 border border-[var(--color-blood)] text-[var(--color-blood)] hover:bg-[var(--color-blood)] hover:text-black font-bold transition-all w-fit"
         >
-          ← WSZYSTKIE KLASTRY
+          ← WSZYSTKIE TEMATY
         </a>
       </div>
     </header>
@@ -74,7 +68,7 @@ const hasPosts = posts.length > 0;
     ) : (
       <EmptyState
         isTagFilter={true}
-        message={`W klastrze „${currentTag.label}” nie zarejestrowano jeszcze żadnych pakietów danych. Kolejny zrzut pamięci w przygotowaniu.`}
+        message={`W kategorii „${currentTag.label}” nie opublikowano jeszcze żadnych wpisów.`}
       />
     )}
   </div>

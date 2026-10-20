@@ -16,7 +16,7 @@ const { message, isTagFilter = false } = Astro.props;
     <div class="flex items-center gap-2">
       <span class="w-2.5 h-2.5 bg-[var(--color-blood)] inline-block animate-ping"></span>
       <span class="text-[var(--color-blood)] font-black tracking-widest">
-        {isTagFilter ? 'STATIC NOISE WALL // PUSTY WYNIK FILTRACJI' : 'STATIC NOISE WALL // ZERO PAKIETÓW W OTCHŁANI'}
+        {isTagFilter ? 'STATUS // PUSTY WYNIK' : 'STATUS // BRAK WPISÓW'}
       </span>
     </div>
     <div class="flex items-center gap-2 text-[10px] text-[var(--color-ink-muted)]">
@@ -26,24 +26,21 @@ const { message, isTagFilter = false } = Astro.props;
     </div>
   </div>
 
-  <!-- ŚCIANA SZUMU I ZAKŁÓCEŃ (Decision 6: Static Noise Wall) -->
+  <!-- ŚCIANA SZUMU I ZAKŁÓCEŃ (Static Noise Wall) -->
   <div class="my-6 border border-[var(--color-blood)] bg-black p-4 overflow-hidden flex items-center justify-center relative">
     <div class="absolute top-2 left-3 font-mono text-[9px] text-[var(--color-blood)] z-10 bg-black/90 px-1.5 py-0.5 border border-[var(--color-blood)]" aria-hidden="true">
-      NOISE DENSITY: 100% // SCANNING NVRAM
+      STATIC NOISE // 100%
     </div>
     <AsciiArt seed="empty-static-noise-wall" cols={54} rows={12} style="dither-cluster" themeColor="red" />
   </div>
 
-  <!-- Komunikat awarii / zrzut statusu -->
+  <!-- Komunikat statusu -->
   <div class="bg-black/90 border border-[var(--color-border)] p-4 font-mono text-xs space-y-2 mb-6">
     <div class="text-[var(--color-blood)] font-bold">
-      [0.000000] KERNEL DISPATCH: ZERO COMPILED POSTS IN BUFFER.
+      [0.000000] STATUS: BUFFER_EMPTY
     </div>
-    <div class="text-[var(--color-acid)]">
-      [0.004120] AWAITING RAW ARTICLE INJECTION VIA PAGES CMS.
-    </div>
-    <div class="text-[var(--color-ink-muted)] text-[11px] leading-relaxed">
-      {message || 'Ten devlog to mroczny poligon bezkompromisowego kodu, mikrokontrolerów ESP32, agentów programistycznych i projektów fizycznych. Zaloguj się poniżej, aby nadać pierwszy pakiet.'}
+    <div class="text-[var(--color-ink-muted)] text-xs leading-relaxed">
+      {message || 'Brak opublikowanych wpisów w tym widoku. Nowe publikacje pojawią się wkrótce.'}
     </div>
   </div>
 
@@ -55,7 +52,7 @@ const { message, isTagFilter = false } = Astro.props;
       rel="noopener noreferrer"
       class="px-5 py-2.5 bg-[var(--color-blood)] text-black font-black hover:bg-white hover:text-black transition-all shadow-[3px_3px_0_white]"
     >
-      [NADAJ PAKIET: PAGES CMS ↗]
+      PAGES CMS ↗
     </a>
     <a
       href={SITE.portfolio}
@@ -63,7 +60,7 @@ const { message, isTagFilter = false } = Astro.props;
       rel="noopener noreferrer"
       class="px-4 py-2.5 border border-[var(--color-border)] text-[var(--color-ink)] hover:border-[var(--color-blood)] hover:text-[var(--color-blood)] transition-colors"
     >
-      MAKER PORTFOLIO ↗
+      PORTFOLIO ↗
     </a>
   </div>
 </section>

@@ -60,15 +60,11 @@ const isEven = index % 2 === 0;
         <time datetime={date.toISOString()} class="text-[var(--color-ink-muted)]">
           {formattedDate}
         </time>
-        <span class="text-[10px]" title="Pikselowy obserwator" aria-hidden="true">🐜</span>
       </div>
     </div>
 
     <!-- Miniatura okładki LUB deterministyczna matryca ASCII (w celownikach) -->
     <div class="mb-4 overflow-hidden border border-[var(--color-border)] bg-black relative">
-      <div class="absolute top-1 left-2 font-mono text-[8px] text-[var(--color-blood)] z-10 bg-black/90 px-1 border border-[var(--color-blood)]/40" aria-hidden="true">
-        CALIB: {packetHex} // {slug.slice(0, 14)}
-      </div>
 
       {coverMeta ? (
         <Image
@@ -121,7 +117,7 @@ const isEven = index % 2 === 0;
       class="inline-flex items-center gap-1.5 font-black text-[var(--color-blood)] hover:text-white transition-colors tracking-wider"
       aria-label={`Czytaj wpis: ${title}`}
     >
-      <span>[CZYTAJ WPIS]</span>
+      <span>CZYTAJ WPIS</span>
       <span aria-hidden="true">→</span>
     </a>
     <span class="text-[9px] text-[var(--color-ink-muted)]">CRC: {packetHex}</span>

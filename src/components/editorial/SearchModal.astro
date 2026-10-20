@@ -20,9 +20,8 @@ const baseUrl = getBaseUrl();
         <div class="flex items-center gap-2">
           <span class="w-3 h-3 bg-[var(--color-blood)] inline-block animate-pulse"></span>
           <span class="font-mono text-xs text-[var(--color-blood)] font-black tracking-widest breakcore-glitch">
-            QUERY_STREAM://MEMORY_INDEX
+            WYSZUKIWARKA
           </span>
-          <span class="text-xs ml-2 hidden sm:inline" aria-hidden="true">🐜</span>
         </div>
         <button
           type="button"
@@ -30,7 +29,7 @@ const baseUrl = getBaseUrl();
           class="font-mono text-xs px-2.5 py-1 border border-[var(--color-blood)] text-[var(--color-blood)] hover:bg-[var(--color-blood)] hover:text-black transition-all font-bold"
           aria-label="Zamknij okno wyszukiwarki"
         >
-          ESC / [CLOSE]
+          ESC / ZAMKNIJ
         </button>
       </div>
 
@@ -40,7 +39,7 @@ const baseUrl = getBaseUrl();
             type="search"
             id="search-input"
             class="w-full border-2 border-[var(--color-border)] bg-[var(--bg-shard)] px-4 py-3 font-mono text-sm text-[var(--color-ink)] placeholder-[var(--color-ink-muted)] focus:outline-none focus:border-[var(--color-blood)] focus:ring-1 focus:ring-[var(--color-blood)]"
-            placeholder="Wpisz zapytanie magistrali (np. ESP32, agent, CAD)..."
+            placeholder="Szukaj wpisów, tematów, projektów..."
             autocomplete="off"
           />
         </div>
@@ -48,13 +47,13 @@ const baseUrl = getBaseUrl();
 
       <div class="mt-4 max-h-96 overflow-y-auto" id="search-results">
         <div id="search-initial" class="py-8 text-center text-xs font-mono text-[var(--color-ink-muted)]">
-          Wprowadź co najmniej 2 znaki, aby przeszukać zindeksowane pakiety danych.
+          Wprowadź co najmniej 2 znaki, aby przeszukać bazę wpisów.
         </div>
         <div id="search-loading" class="hidden py-8 text-center text-xs font-mono text-[var(--color-blood)]">
           Skanowanie indeksu Pagefind...
         </div>
         <div id="search-empty" class="hidden py-8 text-center text-xs font-mono text-[var(--color-blood)] font-bold">
-          [FAULT: 0 WYNIKÓW W REJESTRZE DLA PODANEGO ZAPYTANIA]
+          [BRAK WYNIKÓW DLA PODANEGO ZAPYTANIA]
         </div>
         <ul id="search-list" class="space-y-3 divide-y divide-[var(--color-border)]"></ul>
       </div>

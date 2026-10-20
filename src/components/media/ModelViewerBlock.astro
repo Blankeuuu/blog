@@ -20,7 +20,6 @@ const posterSrc = poster ? resolvePath(poster) : undefined;
     <div class="absolute top-2 left-2 z-20 font-mono text-[9px] text-[var(--color-blood)] bg-[var(--bg-void)]/90 px-2 py-0.5 border border-[var(--color-blood)] flex items-center gap-1.5 font-bold">
       <span class="w-2 h-2 bg-[var(--color-blood)] inline-block animate-pulse"></span>
       <span>CAD_VIEWPORT // MESH_RENDER (.GLB)</span>
-      <span class="text-xs ml-1" aria-hidden="true">🐜</span>
     </div>
 
     <!-- Custom Web Component model-viewer (ładowany dynamicznie poniżej) -->
@@ -40,12 +39,12 @@ const posterSrc = poster ? resolvePath(poster) : undefined;
       <!-- Stan ładowania -->
       <div slot="poster" class="w-full h-full flex flex-col items-center justify-center bg-[#020306] font-mono text-xs text-[var(--color-blood)]">
         <span class="inline-block w-4 h-4 border-2 border-[var(--color-blood)] border-t-transparent rounded-full animate-spin mb-2"></span>
-        <span class="font-bold">INITIALIZING 3D VERTEX BUFFER...</span>
+        <span class="font-bold">ŁADOWANIE MODELU 3D...</span>
       </div>
 
       <!-- Stan błędu (np. brak obsługi WebGL) -->
       <div slot="error" class="w-full h-full flex items-center justify-center p-6 text-center font-mono text-xs text-[var(--color-blood)] bg-[var(--bg-shard)] font-bold">
-        [FAULT: WEBGL_CONTEXT_FAILED // UNABLE TO RENDER 3D MESH]
+        BŁĄD: BRAK OBSŁUGI WEBGL
       </div>
     </model-viewer>
 
@@ -56,24 +55,22 @@ const posterSrc = poster ? resolvePath(poster) : undefined;
         class="model-reset-btn px-2.5 py-1 bg-[var(--bg-void)] border border-[var(--color-blood)] text-[var(--color-blood)] hover:bg-[var(--color-blood)] hover:text-black font-bold transition-all shadow-sm"
         aria-label="Zresetuj kamerę modelu"
       >
-        RESET CAM
+        RESET KAMERY
       </button>
       <button
         type="button"
         class="model-rotate-toggle px-2.5 py-1 bg-[var(--bg-void)] border border-[var(--color-blood)] text-[var(--color-blood)] hover:bg-[var(--color-blood)] hover:text-black font-bold transition-all shadow-sm"
         aria-label="Włącz / wyłącz obrót modelu"
       >
-        ROT: ON
+        OBRÓT
       </button>
     </div>
   </div>
 
   <figcaption class="mt-2 text-xs font-mono text-[var(--color-ink-muted)] flex items-center justify-between border-t border-[var(--color-border)] pt-1">
     <div class="flex items-center gap-2">
-      <span class="text-[var(--color-blood)] font-black">[CAD_TOPOLOGY]</span>
       <span>{caption || alt}</span>
     </div>
-    <span class="text-[10px] hidden sm:inline text-[var(--color-acid)] font-bold">和室 6帖 1F-2F MESH</span>
   </figcaption>
 </figure>
 

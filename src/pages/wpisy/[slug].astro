@@ -70,7 +70,7 @@ const packetHex = '0x' + Math.abs(hash).toString(16).toUpperCase().padStart(4, '
     <div class="mb-8 font-mono text-xs text-[var(--color-ink-muted)] flex items-center justify-between border-b border-[var(--color-border)] pb-3">
       <a href={getPostsUrl()} class="inline-flex items-center gap-1.5 hover:text-[var(--color-blood)] font-bold transition-colors">
         <span aria-hidden="true">←</span>
-        <span>[POWRÓT DO WPISÓW]</span>
+        <span>POWRÓT DO WPISÓW</span>
       </a>
       <div class="flex items-center gap-2 text-[11px]">
         <span class="barcode-dense w-12 h-3 inline-block" aria-hidden="true"></span>
@@ -128,9 +128,6 @@ const packetHex = '0x' + Math.abs(hash).toString(16).toUpperCase().padStart(4, '
       <div class="pt-4">
         {coverMeta ? (
           <div class="shard-box border-2 border-[var(--color-blood)] overflow-hidden bg-black crosshair-corners relative">
-            <div class="absolute top-2 left-3 font-mono text-[9px] text-[var(--color-blood)] bg-black/90 px-1.5 py-0.5 z-10 border border-[var(--color-blood)]" aria-hidden="true">
-              CALIB: 58.64896, -146.83960 // {packetHex}
-            </div>
             <Image
               src={coverMeta}
               alt={coverAlt || title}
@@ -153,7 +150,7 @@ const packetHex = '0x' + Math.abs(hash).toString(16).toUpperCase().padStart(4, '
       <aside class="my-8 max-w-2xl mx-auto p-4 sm:p-5 border border-[var(--color-blood)] bg-[var(--bg-shard)] font-mono text-xs crosshair-corners">
         <div class="font-black text-[var(--color-blood)] uppercase tracking-wider mb-3 flex items-center gap-2 border-b border-[var(--color-border)] pb-2">
           <span class="w-2 h-2 bg-[var(--color-blood)] inline-block"></span>
-          <span>SPIS SEKTORÓW DOKUMENTU</span>
+          <span>SPIS TREŚCI</span>
         </div>
         <nav aria-label="Spis treści artykułu">
           <ul class="space-y-1.5">

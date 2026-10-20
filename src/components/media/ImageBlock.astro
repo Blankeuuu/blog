@@ -25,11 +25,6 @@ const containerWidth =
 
 <figure class:list={['my-8', containerWidth]}>
   <div class="shard-box relative overflow-hidden border-2 border-[var(--color-blood)]/60 bg-[var(--bg-void)] group">
-    <!-- Etykieta kalibracji obrazu (z referencji wektorowej) -->
-    <div class="absolute top-2 left-2 z-10 font-mono text-[9px] text-[var(--color-blood)] bg-[var(--bg-void)]/90 px-2 py-0.5 border border-[var(--color-blood)] font-bold flex items-center gap-2" aria-hidden="true">
-      <span>FRAME_OPTIC // CALIB: 58.64896, -146.83960</span>
-      <span class="text-xs">🐜</span>
-    </div>
 
     {imageMeta ? (
       <Image
@@ -56,10 +51,8 @@ const containerWidth =
   {caption && (
     <figcaption class="mt-2 text-xs font-mono text-[var(--color-ink-muted)] flex items-center justify-between border-t border-[var(--color-border)] pt-1">
       <div class="flex items-center gap-2">
-        <span class="text-[var(--color-blood)] font-black">[FIG_FRAME]</span>
         <span>{caption}</span>
       </div>
-      <span class="text-[9px] text-[var(--color-acid)] font-bold">和室 6帖</span>
     </figcaption>
   )}
 </figure>
