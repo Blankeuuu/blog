@@ -36,38 +36,38 @@ for (let i = 0; i < slug.length; i++) {
   hash |= 0;
 }
 const packetHex = '0x' + Math.abs(hash).toString(16).toUpperCase().padStart(4, '0').slice(0, 4);
+const isEven = index % 2 === 0;
 ---
 
 <article
   class:list={[
-    'terminal-window group relative p-4 sm:p-6 flex flex-col justify-between transition-all duration-200 border border-[var(--color-border)] hover:border-[var(--color-green)] hover:shadow-[4px_4px_0_rgba(0,255,102,0.35)] bg-[var(--bg-surface)] corner-brackets',
+    'shard-box group relative p-5 sm:p-7 flex flex-col justify-between transition-all duration-200 border-2 border-[var(--color-border)] hover:border-[var(--color-blood)] hover:shadow-[6px_6px_0_var(--color-blood)] bg-[var(--bg-shard)] crosshair-corners select-none',
+    isEven ? 'hover:rotate-0.5' : 'hover:-rotate-0.5',
     featured ? 'lg:col-span-2' : '',
   ]}
 >
   <div>
-    <!-- Górny pas biletowy: Kod kreskowy, numer pakietu, data, status -->
+    <!-- Górna taśma: Kod kreskowy, identyfikator DEV.xx (bez '#'), data i mrówka -->
     <div class="flex flex-wrap items-center justify-between border-b border-[var(--color-border)] pb-3 mb-4 font-mono text-xs gap-2">
-      <div class="flex items-center gap-2">
-        <span class="barcode-strip w-14 h-3 inline-block" aria-hidden="true"></span>
-        <span class="font-bold text-[var(--color-green)]">#DEV-{issueNum}</span>
+      <div class="flex items-center gap-2.5">
+        <span class="barcode-dense w-12 h-3.5 inline-block" aria-hidden="true"></span>
+        <span class="font-black text-[var(--color-blood)] tracking-wider">DEV.{issueNum}</span>
         <span class="text-[var(--color-border)]">/</span>
         <span class="text-[var(--color-ink-muted)] text-[11px]">{packetHex}</span>
       </div>
 
-      <div class="flex items-center gap-2">
-        <time datetime={date.toISOString()} class="text-[var(--color-ink-muted)] text-[11px]">
+      <div class="flex items-center gap-2 font-mono text-[11px]">
+        <time datetime={date.toISOString()} class="text-[var(--color-ink-muted)]">
           {formattedDate}
         </time>
-        <span class="px-1.5 py-0.2 border border-[var(--color-green)] text-[var(--color-green)] text-[9px] font-bold">
-          STATUS: OK
-        </span>
+        <span class="text-[10px]" title="Pikselowy obserwator" aria-hidden="true">🐜</span>
       </div>
     </div>
 
-    <!-- Miniatura okładki LUB deterministyczna matryca ASCII artykułu -->
-    <div class="mb-4 overflow-hidden border border-[var(--color-border)] bg-[var(--bg-canvas)] relative">
-      <div class="absolute top-1 left-2 font-mono text-[8px] text-[var(--color-ink-muted)] z-10 bg-[var(--bg-canvas)]/80 px-1" aria-hidden="true">
-        CALIB: {packetHex} // {slug.slice(0, 16)}
+    <!-- Miniatura okładki LUB deterministyczna matryca ASCII (w celownikach) -->
+    <div class="mb-4 overflow-hidden border border-[var(--color-border)] bg-black relative">
+      <div class="absolute top-1 left-2 font-mono text-[8px] text-[var(--color-blood)] z-10 bg-black/90 px-1 border border-[var(--color-blood)]/40" aria-hidden="true">
+        CALIB: {packetHex} // {slug.slice(0, 14)}
       </div>
 
       {coverMeta ? (
@@ -80,50 +80,50 @@ const packetHex = '0x' + Math.abs(hash).toString(16).toUpperCase().padStart(4, '
           class="w-full h-44 sm:h-52 object-cover transition-transform duration-300 group-hover:scale-[1.02]"
         />
       ) : (
-        <div class="h-36 sm:h-44 flex items-center justify-center p-2 bg-[var(--bg-canvas)]">
-          <AsciiArt seed={asciiSeed} cols={44} rows={11} style="thumbnail" themeColor="green" />
+        <div class="h-36 sm:h-44 flex items-center justify-center p-2 bg-black">
+          <AsciiArt seed={asciiSeed} cols={44} rows={11} style="glitch" themeColor="red" />
         </div>
       )}
     </div>
 
-    <!-- Tagi zworkowe -->
-    <div class="flex flex-wrap gap-1.5 mb-3">
+    <!-- Tagi bez znaku '#' (Zgodnie z wytycznymi użytkownika) -->
+    <div class="flex flex-wrap gap-1.5 mb-3 font-mono text-xs">
       {tags.slice(0, 3).map((t) => (
         <a
           href={getTagUrl(t)}
-          class="text-[10px] font-mono px-1.5 py-0.5 border border-[var(--color-border)] text-[var(--color-ink-muted)] hover:border-[var(--color-green)] hover:text-[var(--color-green)] transition-colors"
+          class="text-[10px] px-2 py-0.5 border border-[var(--color-border)] text-[var(--color-ink-muted)] hover:border-[var(--color-blood)] hover:text-[var(--color-blood)] hover:bg-[var(--bg-void)] transition-colors font-bold uppercase tracking-wider"
         >
-          [JMP_{t.toUpperCase()}] {tagLabel(t)}
+          {tagLabel(t)}
         </a>
       ))}
     </div>
 
-    <!-- Tytuł wpisu -->
+    <!-- Tytuł wpisu (Rozciągnięty, brutalistyczny) -->
     <h3 class:list={[
-      'font-display font-black tracking-tight text-[var(--color-ink)] group-hover:text-[var(--color-green)] transition-colors',
-      featured ? 'text-2xl sm:text-3xl' : 'text-xl sm:text-2xl',
+      'font-display font-black tracking-tight text-[var(--color-ink)] group-hover:text-[var(--color-blood)] transition-colors',
+      featured ? 'text-2xl sm:text-3xl lg:text-4xl' : 'text-xl sm:text-2xl',
     ]}>
       <a href={postUrl} class="focus:outline-none">
         {title}
       </a>
     </h3>
 
-    <!-- Zajawka / zrzut treści -->
+    <!-- Zajawka / Zrzut tekstu -->
     <p class="mt-2.5 font-body text-sm sm:text-base text-[var(--color-ink-muted)] leading-relaxed line-clamp-3">
       {excerpt}
     </p>
   </div>
 
-  <!-- Dolna perforacja biletu i akcja odczytu -->
-  <div class="mt-6 pt-3 border-t border-dashed border-[var(--color-border)] flex items-center justify-between font-mono text-xs">
+  <!-- Dolny pas akcji: Czerwona laserowa perforacja i CRC -->
+  <div class="mt-6 pt-3 border-t border-[var(--color-border)] flex items-center justify-between font-mono text-xs">
     <a
       href={postUrl}
-      class="inline-flex items-center gap-1.5 font-bold text-[var(--color-green)] hover:text-white transition-colors"
-      aria-label={`Czytaj bufor wpisu: ${title}`}
+      class="inline-flex items-center gap-1.5 font-black text-[var(--color-blood)] hover:text-white transition-colors tracking-wider"
+      aria-label={`Czytaj wpis: ${title}`}
     >
-      <span>[READ_BUFFER_STREAM]</span>
+      <span>[CZYTAJ WPIS]</span>
       <span aria-hidden="true">→</span>
     </a>
-    <span class="text-[9px] text-[var(--color-ink-muted)]">CRC32: {packetHex}</span>
+    <span class="text-[9px] text-[var(--color-ink-muted)]">CRC: {packetHex}</span>
   </div>
 </article>

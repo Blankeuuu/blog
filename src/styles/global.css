@@ -10,84 +10,67 @@
   --font-body: "Instrument Sans Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  --color-paper: var(--bg-canvas);
-  --color-surface: var(--bg-surface);
-  --color-surface-elevated: var(--bg-surface-elevated);
+  --color-paper: var(--bg-void);
+  --color-surface: var(--bg-shard);
+  --color-surface-elevated: #11131c;
   --color-ink: var(--color-ink);
   --color-ink-muted: var(--color-ink-muted);
-  --color-terminal-green: var(--color-green);
-  --color-terminal-red: var(--color-red);
-  --color-terminal-yellow: var(--color-yellow);
-  --color-electric: var(--color-blue);
-  --color-magenta: var(--color-magenta);
+  --color-terminal-green: var(--color-acid);
+  --color-terminal-red: var(--color-blood);
+  --color-terminal-yellow: var(--color-toxic-yellow);
+  --color-electric: var(--color-cyber-blue);
+  --color-magenta: var(--color-glitch-magenta);
   --color-frame: var(--color-border);
   --color-grid: var(--color-grid);
-  --color-card: var(--color-card-bg);
-  --color-accent-soft: var(--color-accent-soft);
+  --color-card: var(--bg-shard);
+  --color-accent-soft: rgba(255, 0, 60, 0.12);
 }
 
 :root {
-  /* Domyślnie głęboki ciemny terminal / cyber-blueprint */
-  --bg-canvas: #080A0F;
-  --bg-surface: #0E121A;
-  --bg-surface-elevated: #141A26;
-  --color-ink: #E6ECF5;
-  --color-ink-muted: #7E8B9B;
-  --color-green: #00FF66;
-  --color-red: #FF1744;
-  --color-yellow: #FFE600;
-  --color-blue: #388BFD;
-  --color-magenta: #FF007F;
-  --color-border: rgba(126, 139, 155, 0.32);
-  --color-border-glow: rgba(0, 255, 102, 0.35);
-  --color-grid: rgba(56, 139, 253, 0.09);
-  --color-card-bg: rgba(14, 18, 26, 0.94);
-  --color-accent-soft: rgba(0, 255, 102, 0.08);
-  --color-scanline: rgba(0, 0, 0, 0.35);
+  /* MROCZNA BAZA BREAKCORE / VOID / SCHEMATICS */
+  --bg-void: #040407;
+  --bg-shard: #090A10;
+  --bg-shard-solid: #0d0e17;
+  --bg-surface: #090A10;
+  --bg-canvas: #040407;
+  --color-ink: #F0F2F8;
+  --color-ink-muted: #6B7280;
+  --color-blood: #FF003C;
+  --color-red: #FF003C;
+  --color-acid: #2BFF00;
+  --color-green: #2BFF00;
+  --color-toxic-yellow: #FFF000;
+  --color-yellow: #FFF000;
+  --color-cyber-blue: #0066FF;
+  --color-glitch-magenta: #FF0055;
+  --color-border: rgba(240, 242, 248, 0.18);
+  --color-border-blood: #FF003C;
+  --color-grid: rgba(255, 0, 60, 0.08);
+  --color-card-bg: rgba(9, 10, 16, 0.95);
+  --color-scanline: rgba(0, 0, 0, 0.45);
 }
 
-/* Surowy schemat laboratoryjny (tryb jasny / odwrócony blueprint) */
+/* Opcjonalny odwrócony schemat inżynieryjny (stark raw paper/contrast) */
 html[data-theme="light"] {
-  --bg-canvas: #E6E6DF;
-  --bg-surface: #F5F5F0;
-  --bg-surface-elevated: #FFFFFF;
-  --color-ink: #0A0D12;
+  --bg-void: #E2E2DC;
+  --bg-shard: #EFEFEA;
+  --bg-shard-solid: #FFFFFF;
+  --color-ink: #070709;
   --color-ink-muted: #4B5563;
-  --color-green: #008A2E;
-  --color-red: #D6001C;
-  --color-yellow: #B8860B;
-  --color-blue: #0047BA;
-  --color-magenta: #C2005A;
-  --color-border: rgba(10, 13, 18, 0.35);
-  --color-border-glow: rgba(0, 71, 186, 0.4);
-  --color-grid: rgba(10, 13, 18, 0.08);
-  --color-card-bg: rgba(245, 245, 240, 0.96);
-  --color-accent-soft: rgba(0, 71, 186, 0.08);
+  --color-blood: #D60029;
+  --color-acid: #00991F;
+  --color-toxic-yellow: #B8860B;
+  --color-cyber-blue: #0044CC;
+  --color-glitch-magenta: #B3003C;
+  --color-border: rgba(7, 7, 9, 0.3);
+  --color-border-blood: #D60029;
+  --color-grid: rgba(7, 7, 9, 0.08);
+  --color-card-bg: rgba(239, 239, 234, 0.96);
   --color-scanline: transparent;
 }
 
-/* Tryb ciemny wymuszony */
-html[data-theme="dark"] {
-  --bg-canvas: #080A0F;
-  --bg-surface: #0E121A;
-  --bg-surface-elevated: #141A26;
-  --color-ink: #E6ECF5;
-  --color-ink-muted: #7E8B9B;
-  --color-green: #00FF66;
-  --color-red: #FF1744;
-  --color-yellow: #FFE600;
-  --color-blue: #388BFD;
-  --color-magenta: #FF007F;
-  --color-border: rgba(126, 139, 155, 0.32);
-  --color-border-glow: rgba(0, 255, 102, 0.35);
-  --color-grid: rgba(56, 139, 253, 0.09);
-  --color-card-bg: rgba(14, 18, 26, 0.94);
-  --color-accent-soft: rgba(0, 255, 102, 0.08);
-  --color-scanline: rgba(0, 0, 0, 0.35);
-}
-
 html {
-  background-color: var(--bg-canvas);
+  background-color: var(--bg-void);
   color: var(--color-ink);
   font-family: var(--font-body);
   scroll-behavior: smooth;
@@ -104,23 +87,23 @@ html {
   }
 }
 
-/* Inżynieryjna siatka blueprint / PCB */
-.bg-grid-blueprint {
+/* Siatka schematyczna / blueprint / tatami */
+.bg-schematic-grid {
   background-image:
     linear-gradient(to right, var(--color-grid) 1px, transparent 1px),
     linear-gradient(to bottom, var(--color-grid) 1px, transparent 1px);
-  background-size: 28px 28px;
+  background-size: 32px 32px;
 }
 
-.bg-grid-dense {
+.bg-circuit-dense {
   background-image:
-    linear-gradient(to right, var(--color-grid) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--color-grid) 1px, transparent 1px);
-  background-size: 14px 14px;
+    linear-gradient(to right, rgba(255, 0, 60, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 102, 255, 0.06) 1px, transparent 1px);
+  background-size: 16px 16px;
 }
 
-/* CRT Scanline overlay */
-.scanlines {
+/* CRT Scanlines */
+.scanlines-overlay {
   background: linear-gradient(
     rgba(18, 16, 16, 0) 50%,
     var(--color-scanline) 50%
@@ -128,76 +111,153 @@ html {
   background-size: 100% 4px;
 }
 
-/* Retro OS / Terminal Window */
-.terminal-window {
-  border: 1px solid var(--color-border);
-  background-color: var(--color-card);
-  box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.5);
-}
-
-html[data-theme="light"] .terminal-window {
-  box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.25);
-}
-
-/* Celowniki narożne (corner marks) */
-.corner-brackets {
+/* Poszarpane, pocięte kształty (Torn Shards / Jagged edges) */
+.shard-box {
   position: relative;
+  border: 1px solid var(--color-border);
+  background-color: var(--bg-shard);
 }
 
-.corner-brackets::before,
-.corner-brackets::after {
-  content: "";
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  pointer-events: none;
-}
-
-.corner-brackets::before {
-  top: -1px;
-  left: -1px;
-  border-top: 2px solid var(--color-green);
-  border-left: 2px solid var(--color-green);
-}
-
-.corner-brackets::after {
-  bottom: -1px;
-  right: -1px;
-  border-bottom: 2px solid var(--color-green);
-  border-right: 2px solid var(--color-green);
-}
-
-/* Kody kreskowe (CSS barcode generator) */
-.barcode-strip {
-  background: repeating-linear-gradient(
-    to right,
-    var(--color-ink) 0,
-    var(--color-ink) 2px,
-    transparent 2px,
-    transparent 4px,
-    var(--color-ink) 4px,
-    var(--color-ink) 5px,
-    transparent 5px,
-    transparent 8px,
-    var(--color-ink) 8px,
-    var(--color-ink) 11px,
-    transparent 11px,
-    transparent 13px,
-    var(--color-ink) 13px,
-    var(--color-ink) 14px,
-    transparent 14px,
-    transparent 16px
+.shard-jagged {
+  clip-path: polygon(
+    0% 0%, 
+    100% 0%, 
+    99% 48%, 
+    100% 100%, 
+    62% 98%, 
+    38% 100%, 
+    0% 97%
   );
 }
 
+.shard-torn {
+  clip-path: polygon(
+    0% 2%, 
+    4% 0%, 
+    18% 2%, 
+    32% 0%, 
+    50% 3%, 
+    68% 0%, 
+    85% 2%, 
+    100% 0%, 
+    98% 98%, 
+    82% 100%, 
+    64% 97%, 
+    45% 100%, 
+    22% 98%, 
+    0% 100%
+  );
+}
+
+.shard-skew-l {
+  transform: rotate(-0.75deg);
+}
+
+.shard-skew-r {
+  transform: rotate(0.85deg);
+}
+
+/* Rozciągnięta, brutalistyczna typografia */
+.font-stretched {
+  display: inline-block;
+  transform: scaleY(1.35) scaleX(0.88);
+  transform-origin: left center;
+}
+
+.font-squished {
+  display: inline-block;
+  transform: scaleY(0.75) scaleX(1.25);
+  transform-origin: left center;
+}
+
+/* Wektorowe czerwone lasery / promienie (z ref 3) */
+.ray-line-blood {
+  position: relative;
+}
+
+.ray-line-blood::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--color-blood) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Glitch i jitter dla breakcore */
+.breakcore-glitch:hover {
+  animation: breakcore-jitter 0.18s infinite linear;
+}
+
+@keyframes breakcore-jitter {
+  0% { transform: translate(0, 0); text-shadow: -2px 0 var(--color-blood), 2px 0 var(--color-acid); }
+  25% { transform: translate(-2px, 1px); text-shadow: 2px 0 var(--color-glitch-magenta), -2px 0 var(--color-cyber-blue); }
+  50% { transform: translate(1px, -1px); text-shadow: -2px 0 var(--color-acid), 2px 0 var(--color-blood); }
+  75% { transform: translate(-1px, -1px); text-shadow: 2px 0 var(--color-toxic-yellow), -2px 0 var(--color-blood); }
+  100% { transform: translate(0, 0); text-shadow: none; }
+}
+
+/* Paski kodów kreskowych i szumu */
+.barcode-dense {
+  background: repeating-linear-gradient(
+    to right,
+    var(--color-ink) 0,
+    var(--color-ink) 1px,
+    transparent 1px,
+    transparent 3px,
+    var(--color-ink) 3px,
+    var(--color-ink) 5px,
+    transparent 5px,
+    transparent 6px,
+    var(--color-ink) 6px,
+    var(--color-ink) 10px,
+    transparent 10px,
+    transparent 12px,
+    var(--color-ink) 12px,
+    var(--color-ink) 13px,
+    transparent 13px,
+    transparent 17px
+  );
+}
+
+/* Celowniki narożne */
+.crosshair-corners {
+  position: relative;
+}
+
+.crosshair-corners::before,
+.crosshair-corners::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+}
+
+.crosshair-corners::before {
+  top: -2px;
+  left: -2px;
+  border-top: 2px solid var(--color-blood);
+  border-left: 2px solid var(--color-blood);
+}
+
+.crosshair-corners::after {
+  bottom: -2px;
+  right: -2px;
+  border-bottom: 2px solid var(--color-blood);
+  border-right: 2px solid var(--color-blood);
+}
+
 /* Kursor terminala */
-.cursor-block {
+.cursor-block-blood {
   display: inline-block;
   width: 0.55em;
   height: 1.1em;
-  background-color: var(--color-green);
+  background-color: var(--color-blood);
   vertical-align: middle;
-  animation: cursor-blink 1s step-end infinite;
+  animation: cursor-blink 0.8s step-end infinite;
 }
 
 @keyframes cursor-blink {
@@ -205,12 +265,7 @@ html[data-theme="light"] .terminal-window {
   50% { opacity: 0; }
 }
 
-/* Glitch hover shift */
-.glitch-hover:hover {
-  text-shadow: -1.5px 0 var(--color-magenta), 1.5px 0 var(--color-green);
-}
-
-/* Typografia editorial artykułów — specyfikacja laboratoryjna */
+/* Typografia treści (20% funkcjonalności - zachowanie czytelności przy 80% art statement) */
 .prose-journal {
   font-family: var(--font-body);
   color: var(--color-ink);
@@ -218,7 +273,8 @@ html[data-theme="light"] .terminal-window {
 
 .prose-journal p {
   margin-bottom: 1.5rem;
-  line-height: 1.75;
+  line-height: 1.8;
+  font-size: 1.05rem;
 }
 
 .prose-journal h1,
@@ -226,59 +282,51 @@ html[data-theme="light"] .terminal-window {
 .prose-journal h3,
 .prose-journal h4 {
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 900;
   color: var(--color-ink);
-  letter-spacing: -0.02em;
-  margin-top: 2.5rem;
+  letter-spacing: -0.03em;
+  margin-top: 2.75rem;
   margin-bottom: 1rem;
 }
 
 .prose-journal h2 {
-  font-size: 1.625rem;
-  border-bottom: 1px dashed var(--color-border);
-  padding-bottom: 0.5rem;
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-}
-
-.prose-journal h2::before {
-  content: "§";
-  font-family: var(--font-mono);
-  color: var(--color-green);
-  font-size: 1rem;
-  font-weight: 400;
+  font-size: 1.75rem;
+  border-left: 4px solid var(--color-blood);
+  padding-left: 0.75rem;
+  text-transform: uppercase;
 }
 
 .prose-journal h3 {
-  font-size: 1.25rem;
-  color: var(--color-blue);
+  font-size: 1.35rem;
+  color: var(--color-blood);
 }
 
 .prose-journal a {
-  color: var(--color-green);
+  color: var(--color-blood);
   text-decoration: underline;
-  text-decoration-thickness: 1.5px;
+  text-decoration-thickness: 2px;
   text-underline-offset: 3px;
-  transition: color 0.15s ease;
+  transition: color 0.1s ease;
 }
 
 .prose-journal a:hover {
-  color: var(--color-magenta);
+  color: var(--color-acid);
+  background-color: var(--bg-void);
 }
 
 .prose-journal strong {
-  font-weight: 700;
+  font-weight: 800;
   color: var(--color-ink);
 }
 
 .prose-journal blockquote {
-  border-left: 3px solid var(--color-red);
-  padding: 1rem 1.25rem;
-  margin: 1.75rem 0;
-  background-color: var(--color-accent-soft);
+  border-left: 4px solid var(--color-blood);
+  padding: 1.25rem 1.5rem;
+  margin: 2rem 0;
+  background-color: rgba(255, 0, 60, 0.06);
   font-family: var(--font-mono);
   font-size: 0.95rem;
+  color: var(--color-ink);
 }
 
 .prose-journal ul {
@@ -295,12 +343,12 @@ html[data-theme="light"] .terminal-window {
 }
 
 .prose-journal ul li::before {
-  content: "->";
+  content: "»";
   position: absolute;
   left: 0;
-  color: var(--color-green);
+  color: var(--color-blood);
   font-family: var(--font-mono);
-  font-size: 0.85em;
+  font-weight: 900;
 }
 
 .prose-journal ol {
@@ -317,17 +365,17 @@ html[data-theme="light"] .terminal-window {
 .prose-journal code:not(pre code) {
   font-family: var(--font-mono);
   font-size: 0.85em;
-  background-color: rgba(56, 139, 253, 0.12);
-  color: var(--color-green);
+  background-color: rgba(255, 0, 60, 0.12);
+  color: var(--color-blood);
   padding: 0.15em 0.4em;
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(255, 0, 60, 0.3);
 }
 
 .prose-journal hr {
   border: 0;
-  height: 1px;
-  background: repeating-linear-gradient(to right, var(--color-border) 0, var(--color-border) 4px, transparent 4px, transparent 8px);
-  margin: 3rem 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-blood) 0%, transparent 100%);
+  margin: 3.5rem 0;
 }
 
 .prose-journal table {
@@ -346,15 +394,14 @@ html[data-theme="light"] .terminal-window {
 }
 
 .prose-journal th {
-  background-color: rgba(56, 139, 253, 0.12);
-  font-weight: 700;
+  background-color: rgba(255, 0, 60, 0.15);
+  font-weight: 800;
   color: var(--color-ink);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 /* Dostępność: outline fokusu */
 :focus-visible {
-  outline: 2px solid var(--color-green);
+  outline: 2px solid var(--color-blood);
   outline-offset: 3px;
 }

@@ -4,7 +4,7 @@
  * Działa w 100% deterministycznie na serwerze (SSR/SSG) i opcjonalnie animuje się w przeglądarce.
  */
 
-export type AsciiPatternStyle = 'poster-hero' | 'contour-mesh' | 'dither-cluster' | 'breakcore-strata' | 'thumbnail';
+export type AsciiPatternStyle = 'poster-hero' | 'contour-mesh' | 'dither-cluster' | 'breakcore-strata' | 'thumbnail' | 'glitch';
 
 export interface AsciiOptions {
   seed?: string;
@@ -157,6 +157,7 @@ export function generateAsciiGrid(opts: AsciiOptions = {}): string[] {
           break;
         }
 
+        case 'glitch':
         case 'breakcore-strata': {
           // Ostre, rytmiczne, poszatkowane warstwy
           const band = Math.floor(ny * 16);

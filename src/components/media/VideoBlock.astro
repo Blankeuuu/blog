@@ -18,11 +18,12 @@ const posterSrc = poster ? resolvePath(poster) : undefined;
 ---
 
 <figure class="my-10 max-w-4xl mx-auto" aria-label={`Wideo: ${title}`}>
-  <div class="terminal-window relative overflow-hidden border border-[var(--color-border)] bg-black/90 aspect-video corner-brackets">
+  <div class="shard-box relative overflow-hidden border-2 border-[var(--color-blood)] bg-black/95 aspect-video shadow-[6px_6px_0_var(--color-blood)]">
     <!-- Pasek tytułowy strumienia AV -->
-    <div class="absolute top-2 left-2 z-20 font-mono text-[9px] text-[var(--color-green)] bg-[var(--bg-canvas)]/90 px-1.5 py-0.5 border border-[var(--color-border)] flex items-center gap-1.5">
-      <span class="w-1.5 h-1.5 bg-[var(--color-green)] inline-block"></span>
+    <div class="absolute top-2 left-2 z-20 font-mono text-[9px] text-[var(--color-blood)] bg-[var(--bg-void)]/90 px-2 py-0.5 border border-[var(--color-blood)] flex items-center gap-1.5 font-bold">
+      <span class="w-2 h-2 bg-[var(--color-blood)] inline-block animate-pulse"></span>
       <span>AV_FEED // {youtubeId ? `YOUTUBE:${youtubeId}` : 'LOCAL_STREAM'}</span>
+      <span class="text-xs ml-1" aria-hidden="true">🐜</span>
     </div>
 
     {youtubeId ? (
@@ -30,18 +31,18 @@ const posterSrc = poster ? resolvePath(poster) : undefined;
         <img
           src={`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`}
           alt={`Miniaturka filmu YouTube: ${title}`}
-          class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+          class="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity"
           loading="lazy"
         />
         <button
           type="button"
-          class="yt-play-btn absolute inset-0 w-full h-full flex flex-col items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-green)]"
+          class="yt-play-btn absolute inset-0 w-full h-full flex flex-col items-center justify-center bg-black/50 group-hover:bg-black/30 transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-blood)]"
           aria-label={`Odtwórz wideo: ${title}`}
         >
-          <div class="px-5 py-2.5 bg-[var(--color-green)] text-black flex items-center justify-center font-mono font-bold text-xs tracking-wider shadow-lg transform group-hover:scale-105 transition-transform">
-            <span>[PLAY_STREAM &#9654;]</span>
+          <div class="px-6 py-3 bg-[var(--color-blood)] text-black flex items-center justify-center font-mono font-black text-sm tracking-widest shadow-[4px_4px_0_white] transform group-hover:scale-105 transition-transform">
+            <span>PLAY STREAM ▶</span>
           </div>
-          <span class="mt-2 font-mono text-[10px] text-[var(--color-green)] bg-black/80 px-2 py-0.5 border border-[var(--color-border)]">
+          <span class="mt-3 font-mono text-[10px] text-[var(--color-ink)] bg-black/90 px-2 py-0.5 border border-[var(--color-border)]">
             CLICK TO INITIALIZE YOUTUBE BUFFER
           </span>
         </button>
@@ -57,18 +58,18 @@ const posterSrc = poster ? resolvePath(poster) : undefined;
         Twoja przeglądarka nie obsługuje elementu wideo.
       </video>
     ) : (
-      <div class="w-full h-full flex items-center justify-center font-mono text-xs text-[var(--color-red)]">
+      <div class="w-full h-full flex items-center justify-center font-mono text-xs text-[var(--color-blood)] font-bold">
         [FAULT: BRAK ŹRÓDŁA WIDEO]
       </div>
     )}
   </div>
 
-  <figcaption class="mt-2 text-xs font-mono text-[var(--color-ink-muted)] flex items-center justify-between">
+  <figcaption class="mt-2 text-xs font-mono text-[var(--color-ink-muted)] flex items-center justify-between border-t border-[var(--color-border)] pt-1">
     <div class="flex items-center gap-2">
-      <span class="text-[var(--color-green)] font-bold">[AV_CAPTION]</span>
+      <span class="text-[var(--color-blood)] font-black">[AV_FEED]</span>
       <span>{caption || title}</span>
     </div>
-    {youtubeId && <span class="text-[10px] text-[var(--color-ink-muted)]">PRIVACY_NOCOOKIE</span>}
+    {youtubeId && <span class="text-[10px] text-[var(--color-acid)] font-bold">和室 6帖 PRIVACY_NOCOOKIE</span>}
   </figcaption>
 </figure>
 

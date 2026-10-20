@@ -10,78 +10,60 @@ interface Props {
 const { message, isTagFilter = false } = Astro.props;
 ---
 
-<section class="my-12 max-w-4xl mx-auto terminal-window border border-[var(--color-border)] bg-[var(--bg-surface)] p-6 sm:p-10 relative overflow-hidden corner-brackets">
-  <!-- Pasek tytułowy okna retro OS -->
-  <div class="flex items-center justify-between border-b border-[var(--color-border)] pb-2.5 mb-6 font-mono text-xs text-[var(--color-ink-muted)]">
+<section class="my-12 max-w-4xl mx-auto shard-box border-2 border-[var(--color-blood)] bg-[var(--bg-shard)] p-6 sm:p-10 relative overflow-hidden crosshair-corners transform rotate-[-0.5deg] shadow-[8px_8px_0_rgba(255,0,60,0.3)]">
+  <!-- Pasek tytułowy okna zakłóceń -->
+  <div class="flex items-center justify-between border-b border-[var(--color-blood)] pb-3 mb-6 font-mono text-xs">
     <div class="flex items-center gap-2">
-      <span class="w-2.5 h-2.5 bg-[var(--color-green)] inline-block"></span>
-      <span class="text-[var(--color-green)] font-bold">
-        {isTagFilter ? 'DIAGNOSTIC // FILTER_QUERY_RESULT' : 'POST_DIAGNOSTIC // NVRAM_CHECK // CODE: 0x00'}
+      <span class="w-2.5 h-2.5 bg-[var(--color-blood)] inline-block animate-ping"></span>
+      <span class="text-[var(--color-blood)] font-black tracking-widest">
+        {isTagFilter ? 'STATIC NOISE WALL // PUSTY WYNIK FILTRACJI' : 'STATIC NOISE WALL // ZERO PAKIETÓW W OTCHŁANI'}
       </span>
     </div>
-    <div class="flex items-center gap-1.5 text-[9px]">
+    <div class="flex items-center gap-2 text-[10px] text-[var(--color-ink-muted)]">
       <span>_</span>
       <span>[]</span>
       <span>X</span>
     </div>
   </div>
 
-  <!-- Zrzut logu startowego / POST -->
-  <div class="font-mono text-xs text-[var(--color-ink-muted)] bg-[var(--bg-canvas)] p-4 border border-[var(--color-border)] mb-6 space-y-1">
-    <div class="text-[var(--color-green)]">[0.000000] BLANKEU_KERNEL v7.4.2-rt #1 PREEMPT INIT</div>
-    <div>[0.002810] CPU: 240MHz DUAL CORE // DMA BUFFER ALLOCATED</div>
-    <div>[0.007420] NVRAM_SCAN: /src/content/posts/*.md ... 0 PUBLISHED OBJECTS</div>
-    <div class="text-[var(--color-yellow)]">[0.012100] WARNING: NVRAM BUFFER IS CURRENTLY EMPTY</div>
-    <div class="text-[var(--color-green)] flex items-center gap-1">
-      <span>[0.015040] STATUS: LISTENING FOR FIRST PAYLOAD VIA PAGES CMS</span>
-      <span class="cursor-block"></span>
+  <!-- ŚCIANA SZUMU I ZAKŁÓCEŃ (Decision 6: Static Noise Wall) -->
+  <div class="my-6 border border-[var(--color-blood)] bg-black p-4 overflow-hidden flex items-center justify-center relative">
+    <div class="absolute top-2 left-3 font-mono text-[9px] text-[var(--color-blood)] z-10 bg-black/90 px-1.5 py-0.5 border border-[var(--color-blood)]" aria-hidden="true">
+      NOISE DENSITY: 100% // SCANNING NVRAM
+    </div>
+    <AsciiArt seed="empty-static-noise-wall" cols={54} rows={12} style="dither-cluster" themeColor="red" />
+  </div>
+
+  <!-- Komunikat awarii / zrzut statusu -->
+  <div class="bg-black/90 border border-[var(--color-border)] p-4 font-mono text-xs space-y-2 mb-6">
+    <div class="text-[var(--color-blood)] font-bold">
+      [0.000000] KERNEL DISPATCH: ZERO COMPILED POSTS IN BUFFER.
+    </div>
+    <div class="text-[var(--color-acid)]">
+      [0.004120] AWAITING RAW ARTICLE INJECTION VIA PAGES CMS.
+    </div>
+    <div class="text-[var(--color-ink-muted)] text-[11px] leading-relaxed">
+      {message || 'Ten devlog to mroczny poligon bezkompromisowego kodu, mikrokontrolerów ESP32, agentów programistycznych i projektów fizycznych. Zaloguj się poniżej, aby nadać pierwszy pakiet.'}
     </div>
   </div>
 
-  <h2 class="font-display font-black text-2xl sm:text-3xl text-[var(--color-ink)] tracking-tight">
-    {isTagFilter
-      ? 'Brak zrzutów danych w wybranej magistrali'
-      : 'Dziennik w trybie nasłuchu — oczekiwanie na pierwszy pakiet'}
-  </h2>
-
-  <!-- Matryca ASCII stanu spoczynkowego -->
-  <div class="my-6 border border-[var(--color-border)] bg-[var(--bg-canvas)] p-3 overflow-hidden flex items-center justify-center">
-    <AsciiArt seed="empty-journal-diagnostic" cols={48} rows={10} style="dither-cluster" themeColor="green" />
-  </div>
-
-  <div class="font-body text-sm sm:text-base text-[var(--color-ink-muted)] leading-relaxed space-y-3 max-w-2xl">
-    {message ? (
-      <p>{message}</p>
-    ) : (
-      <>
-        <p>
-          Ten devlog jest surowym poligonem inżynierskim na kody źródłowe, telemetryczne zrzuty pamięci, dokumentację prototypów fizycznych ESP32, reverse-engineering oraz eksperymenty z agentami programistycznymi.
-        </p>
-        <p class="font-mono text-xs text-[var(--color-ink)] bg-[var(--bg-canvas)] p-3 border border-[var(--color-border)]">
-          [INSTRUKCJA] Aby zarejestrować pierwszy wpis produkcyjny, zaloguj się do panelu <strong>Pages CMS</strong> powiązanego z gałęzią <code>main</code> lub dodaj plik Markdown w <code>src/content/posts/</code>.
-        </p>
-      </>
-    )}
-  </div>
-
   <!-- Przyciski wykonawcze -->
-  <div class="mt-8 pt-5 border-t border-[var(--color-border)] flex flex-wrap gap-3 font-mono text-xs">
+  <div class="pt-4 border-t border-[var(--color-border)] flex flex-wrap gap-4 font-mono text-xs">
     <a
       href="https://app.pagescms.org/"
       target="_blank"
       rel="noopener noreferrer"
-      class="px-4 py-2 bg-[var(--color-green)] text-black font-bold hover:bg-white transition-colors flex items-center gap-1.5"
+      class="px-5 py-2.5 bg-[var(--color-blood)] text-black font-black hover:bg-white hover:text-black transition-all shadow-[3px_3px_0_white]"
     >
-      <span>[OTWÓRZ PAGES CMS]</span>
-      <span>↗</span>
+      [NADAJ PAKIET: PAGES CMS ↗]
     </a>
     <a
       href={SITE.portfolio}
       target="_blank"
       rel="noopener noreferrer"
-      class="px-4 py-2 border border-[var(--color-border)] hover:border-[var(--color-green)] hover:text-[var(--color-green)] transition-colors"
+      class="px-4 py-2.5 border border-[var(--color-border)] text-[var(--color-ink)] hover:border-[var(--color-blood)] hover:text-[var(--color-blood)] transition-colors"
     >
-      [PORTFOLIO ZEWNĘTRZNE ↗]
+      MAKER PORTFOLIO ↗
     </a>
   </div>
 </section>

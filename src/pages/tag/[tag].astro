@@ -18,30 +18,55 @@ const hasPosts = posts.length > 0;
 ---
 
 <BaseLayout
-  title={`Magistrala: ${currentTag.label}`}
-  description={`Wpisy z kategorii ${currentTag.label} — notatki i projekty Szymona Potyry.`}
+  title={`Klaster: ${currentTag.label} // RAW MATRIX`}
+  description={`Wpisy z klastra ${currentTag.label} — surowe notatki i projekty Szymona Potyry.`}
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-8 py-12">
-    <!-- Belka nagłówka kategorii -->
-    <header class="border-b border-[var(--color-border)] pb-6 mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-      <div>
-        <div class="flex items-center gap-2 font-mono text-xs text-[var(--color-green)] mb-1">
-          <span class="inline-block w-2.5 h-2.5 bg-[var(--color-green)]"></span>
-          <span>[JUMPER_PIN // JMP_{currentTag.short.toUpperCase()}]</span>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-8 py-12 md:py-16">
+    <!-- Laser ray background decoration -->
+    <div class="ray-line-blood top-24 left-8 w-64" aria-hidden="true"></div>
+
+    <!-- Belka nagłówka kategorii w stylu Breakcore Shard -->
+    <header class="relative border-b-2 border-[var(--color-blood)] pb-6 mb-12">
+      <div class="flex flex-wrap items-center justify-between gap-4 font-mono text-xs mb-3">
+        <div class="flex items-center gap-3">
+          <span class="inline-block w-3 h-3 bg-[var(--color-blood)] animate-pulse"></span>
+          <span class="text-[var(--color-blood)] font-black tracking-widest breakcore-glitch">
+            FILTER://NODE_{currentTag.short.toUpperCase()}
+          </span>
+          <span class="text-[var(--color-ink-muted)]">///</span>
+          <span class="text-[var(--color-acid)] font-bold">和室 6帖 MATRIX</span>
         </div>
-        <h1 class="font-display font-black text-4xl sm:text-5xl text-[var(--color-ink)] tracking-tight">
-          {currentTag.label}
-        </h1>
+
+        <div class="flex items-center gap-4 text-xs font-mono">
+          <span class="text-[var(--color-ink-muted)]">
+            PAKIETY_DANYCH: <strong class="text-[var(--color-acid)]">{posts.length}</strong>
+          </span>
+          <span class="text-xs" aria-hidden="true">🐜</span>
+        </div>
       </div>
 
-      <div class="font-mono text-xs text-[var(--color-ink-muted)]">
-        PAKIETY_DANYCH: <strong class="text-[var(--color-green)]">{posts.length}</strong>
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <h1 class="font-display font-black text-4xl sm:text-6xl text-[var(--color-ink)] tracking-tighter uppercase">
+            {currentTag.label}
+          </h1>
+          <p class="font-mono text-xs sm:text-sm text-[var(--color-ink-muted)] mt-2">
+            Strumień wyekstrahowanych rekordów dla węzła {currentTag.slug}.
+          </p>
+        </div>
+
+        <a
+          href="/tag/"
+          class="inline-block font-mono text-xs px-3 py-1.5 border border-[var(--color-blood)] text-[var(--color-blood)] hover:bg-[var(--color-blood)] hover:text-black font-bold transition-all w-fit"
+        >
+          ← WSZYSTKIE KLASTRY
+        </a>
       </div>
     </header>
 
-    <!-- Lista wpisów dla wybranego tagu -->
+    <!-- Lista wpisów dla wybranego tagu w formie rozbitych zine shards -->
     {hasPosts ? (
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {posts.map((post, idx) => (
           <PostCard post={post} index={idx + 1} />
         ))}
@@ -49,7 +74,7 @@ const hasPosts = posts.length > 0;
     ) : (
       <EmptyState
         isTagFilter={true}
-        message={`W kanale magistrali „${currentTag.label}” nie zarejestrowano jeszcze żadnych pakietów danych. Nowe zrzuty pojawią się wkrótce.`}
+        message={`W klastrze „${currentTag.label}” nie zarejestrowano jeszcze żadnych pakietów danych. Kolejny zrzut pamięci w przygotowaniu.`}
       />
     )}
   </div>

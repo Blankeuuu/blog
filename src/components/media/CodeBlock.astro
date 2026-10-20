@@ -13,21 +13,21 @@ const { code = '', language = 'text', filename } = Astro.props;
 const lang = language === 'text' ? 'plaintext' : language;
 ---
 
-<div class="my-8 max-w-4xl mx-auto terminal-window border border-[var(--color-border)] bg-[var(--bg-surface)] overflow-hidden corner-brackets">
-  <!-- Belka nagłówka kodu: Retro OS titlebar & memory offset -->
-  <div class="flex items-center justify-between px-3 sm:px-4 py-2 bg-[var(--bg-canvas)] border-b border-[var(--color-border)] font-mono text-xs">
+<div class="my-8 max-w-4xl mx-auto shard-box overflow-hidden border-2 border-[var(--color-blood)]/70 bg-[#05060a]">
+  <!-- Belka nagłówka kodu: Retro OS Serial Experiments Lain / Breakcore dump bar -->
+  <div class="flex items-center justify-between px-3 sm:px-4 py-2 bg-[var(--bg-void)] border-b border-[var(--color-blood)]/50 font-mono text-xs">
     <div class="flex items-center gap-2">
-      <span class="inline-block w-2.5 h-2.5 bg-[var(--color-green)]"></span>
+      <span class="inline-block w-2.5 h-2.5 bg-[var(--color-blood)] animate-pulse"></span>
       {filename ? (
-        <span class="font-bold text-[var(--color-ink)]">{filename}</span>
+        <span class="font-black text-[var(--color-ink)]">{filename}</span>
       ) : (
-        <span class="text-[var(--color-ink-muted)]">SOURCE_BUFFER</span>
+        <span class="text-[var(--color-blood)] font-bold">MEMORY_DUMP.ASM</span>
       )}
-      <span class="text-[10px] uppercase px-1.5 py-0.2 border border-[var(--color-border)] text-[var(--color-green)]">
+      <span class="text-[10px] uppercase px-1.5 py-0.5 bg-[var(--bg-shard)] border border-[var(--color-border)] text-[var(--color-acid)] font-bold">
         {language}
       </span>
       <span class="hidden sm:inline text-[9px] text-[var(--color-ink-muted)]">
-        [OFFSET: 0x0000]
+        OFFSET: 0x0000
       </span>
     </div>
 
@@ -35,23 +35,19 @@ const lang = language === 'text' ? 'plaintext' : language;
     <div class="flex items-center gap-3">
       <button
         type="button"
-        class="copy-code-btn px-2.5 py-0.5 border border-[var(--color-border)] hover:border-[var(--color-green)] hover:text-[var(--color-green)] transition-colors text-[10px] font-bold text-[var(--color-ink)] bg-[var(--bg-surface)]"
+        class="copy-code-btn px-2.5 py-0.5 border border-[var(--color-blood)] text-[var(--color-blood)] hover:bg-[var(--color-blood)] hover:text-black transition-all text-[10px] font-black uppercase bg-[var(--bg-shard)]"
         data-code={code}
         aria-label="Kopiuj zawartość bufora do schowka"
       >
-        [COPY_BUFFER]
+        COPY DUMP
       </button>
 
-      <div class="hidden sm:flex items-center gap-1 text-[9px] text-[var(--color-ink-muted)]" aria-hidden="true">
-        <span>_</span>
-        <span>[]</span>
-        <span>X</span>
-      </div>
+      <span class="text-xs hidden sm:inline" aria-hidden="true">🐜</span>
     </div>
   </div>
 
   <!-- Zawartość kodu w stylizacji debugera -->
-  <div class="p-4 overflow-x-auto text-xs sm:text-sm font-mono leading-relaxed bg-[#0d1117]">
+  <div class="p-4 overflow-x-auto text-xs sm:text-sm font-mono leading-relaxed bg-[#030407]">
     <Code code={code} lang={lang as any} theme="github-dark-dimmed" />
   </div>
 </div>
@@ -67,11 +63,11 @@ const lang = language === 'text' ? 'plaintext' : language;
           await navigator.clipboard.writeText(text);
           playBleep(1200, 0.05);
           const original = btn.textContent;
-          btn.textContent = '[COPIED_OK ✓]';
-          btn.classList.add('text-[var(--color-green)]', 'border-[var(--color-green)]');
+          btn.textContent = 'DUMP COPIED ✓';
+          btn.classList.add('bg-[var(--color-blood)]', 'text-black');
           setTimeout(() => {
             btn.textContent = original;
-            btn.classList.remove('text-[var(--color-green)]', 'border-[var(--color-green)]');
+            btn.classList.remove('bg-[var(--color-blood)]', 'text-black');
           }, 2000);
         } catch (err) {
           console.error('Błąd kopiowania:', err);

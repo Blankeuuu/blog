@@ -15,11 +15,12 @@ const posterSrc = poster ? resolvePath(poster) : undefined;
 ---
 
 <figure class="my-10 max-w-4xl mx-auto model-viewer-container" aria-label={`Model 3D: ${alt}`}>
-  <div class="terminal-window relative overflow-hidden border border-[var(--color-border)] bg-[var(--bg-canvas)] aspect-[4/3] sm:aspect-[16/10] corner-brackets">
+  <div class="shard-box relative overflow-hidden border-2 border-[var(--color-blood)] bg-[#020306] aspect-[4/3] sm:aspect-[16/10] shadow-[6px_6px_0_var(--color-blood)]">
     <!-- Pasek tytułowy rzutni 3D / CAD -->
-    <div class="absolute top-2 left-2 z-20 font-mono text-[9px] text-[var(--color-green)] bg-[var(--bg-canvas)]/90 px-1.5 py-0.5 border border-[var(--color-border)] flex items-center gap-1.5">
-      <span class="w-1.5 h-1.5 bg-[var(--color-green)] inline-block"></span>
+    <div class="absolute top-2 left-2 z-20 font-mono text-[9px] text-[var(--color-blood)] bg-[var(--bg-void)]/90 px-2 py-0.5 border border-[var(--color-blood)] flex items-center gap-1.5 font-bold">
+      <span class="w-2 h-2 bg-[var(--color-blood)] inline-block animate-pulse"></span>
       <span>CAD_VIEWPORT // MESH_RENDER (.GLB)</span>
+      <span class="text-xs ml-1" aria-hidden="true">🐜</span>
     </div>
 
     <!-- Custom Web Component model-viewer (ładowany dynamicznie poniżej) -->
@@ -37,13 +38,13 @@ const posterSrc = poster ? resolvePath(poster) : undefined;
       tabindex="0"
     >
       <!-- Stan ładowania -->
-      <div slot="poster" class="w-full h-full flex flex-col items-center justify-center bg-[var(--bg-canvas)] font-mono text-xs text-[var(--color-green)]">
-        <span class="inline-block w-4 h-4 border-2 border-[var(--color-green)] border-t-transparent rounded-full animate-spin mb-2"></span>
-        <span>INITIALIZING 3D VERTEX BUFFER...</span>
+      <div slot="poster" class="w-full h-full flex flex-col items-center justify-center bg-[#020306] font-mono text-xs text-[var(--color-blood)]">
+        <span class="inline-block w-4 h-4 border-2 border-[var(--color-blood)] border-t-transparent rounded-full animate-spin mb-2"></span>
+        <span class="font-bold">INITIALIZING 3D VERTEX BUFFER...</span>
       </div>
 
       <!-- Stan błędu (np. brak obsługi WebGL) -->
-      <div slot="error" class="w-full h-full flex items-center justify-center p-6 text-center font-mono text-xs text-[var(--color-red)] bg-[var(--bg-surface)]">
+      <div slot="error" class="w-full h-full flex items-center justify-center p-6 text-center font-mono text-xs text-[var(--color-blood)] bg-[var(--bg-shard)] font-bold">
         [FAULT: WEBGL_CONTEXT_FAILED // UNABLE TO RENDER 3D MESH]
       </div>
     </model-viewer>
@@ -52,27 +53,27 @@ const posterSrc = poster ? resolvePath(poster) : undefined;
     <div class="absolute bottom-3 right-3 flex items-center gap-1.5 z-10 font-mono text-[11px]">
       <button
         type="button"
-        class="model-reset-btn px-2.5 py-1 bg-[var(--bg-surface)] border border-[var(--color-border)] text-[var(--color-ink)] hover:border-[var(--color-green)] hover:text-[var(--color-green)] transition-colors shadow-sm"
+        class="model-reset-btn px-2.5 py-1 bg-[var(--bg-void)] border border-[var(--color-blood)] text-[var(--color-blood)] hover:bg-[var(--color-blood)] hover:text-black font-bold transition-all shadow-sm"
         aria-label="Zresetuj kamerę modelu"
       >
-        [RESET_CAM]
+        RESET CAM
       </button>
       <button
         type="button"
-        class="model-rotate-toggle px-2.5 py-1 bg-[var(--bg-surface)] border border-[var(--color-border)] text-[var(--color-ink)] hover:border-[var(--color-green)] hover:text-[var(--color-green)] transition-colors shadow-sm"
+        class="model-rotate-toggle px-2.5 py-1 bg-[var(--bg-void)] border border-[var(--color-blood)] text-[var(--color-blood)] hover:bg-[var(--color-blood)] hover:text-black font-bold transition-all shadow-sm"
         aria-label="Włącz / wyłącz obrót modelu"
       >
-        [ROT: ON]
+        ROT: ON
       </button>
     </div>
   </div>
 
-  <figcaption class="mt-2 text-xs font-mono text-[var(--color-ink-muted)] flex items-center justify-between">
+  <figcaption class="mt-2 text-xs font-mono text-[var(--color-ink-muted)] flex items-center justify-between border-t border-[var(--color-border)] pt-1">
     <div class="flex items-center gap-2">
-      <span class="text-[var(--color-green)] font-bold">[CAD_TOPOLOGY]</span>
+      <span class="text-[var(--color-blood)] font-black">[CAD_TOPOLOGY]</span>
       <span>{caption || alt}</span>
     </div>
-    <span class="text-[10px] hidden sm:inline text-[var(--color-ink-muted)]">L-DRAG: ORBIT | WHEEL: ZOOM | R-DRAG: PAN</span>
+    <span class="text-[10px] hidden sm:inline text-[var(--color-acid)] font-bold">和室 6帖 1F-2F MESH</span>
   </figcaption>
 </figure>
 
@@ -113,7 +114,7 @@ const posterSrc = poster ? resolvePath(poster) : undefined;
       rotateBtn?.addEventListener('click', () => {
         viewer.autoRotate = !viewer.autoRotate;
         if (rotateBtn) {
-          rotateBtn.textContent = viewer.autoRotate ? '[ROT: ON]' : '[ROT: OFF]';
+          rotateBtn.textContent = viewer.autoRotate ? 'ROT: ON' : 'ROT: OFF';
         }
       });
     });

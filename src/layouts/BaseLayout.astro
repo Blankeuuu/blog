@@ -56,7 +56,7 @@ const resolvedOgImage = ogImage ? (ogImage.startsWith('http') ? ogImage : absolu
     <link rel="alternate" type="application/rss+xml" title={`${SITE.name} (RSS 2.0)`} href={getRssUrl()} />
     <link rel="sitemap" href={resolvePath('/sitemap-index.xml')} />
 
-    <!-- Inline script zapobiegający mignięciu motywu (Domyślnie Dark Terminal) -->
+    <!-- Motyw: Zawsze mroczna baza breakcore domyślnie -->
     <script is:inline>
       (function() {
         const stored = localStorage.getItem('blankeu-theme');
@@ -69,105 +69,98 @@ const resolvedOgImage = ogImage ? (ogImage.startsWith('http') ? ogImage : absolu
     </script>
   </head>
 
-  <body class="min-h-screen bg-[var(--bg-canvas)] text-[var(--color-ink)] selection:bg-[var(--color-green)] selection:text-black flex flex-col font-body bg-grid-blueprint relative">
-    <!-- Pasek górny telemetrii i stanu jądra -->
-    <aside aria-label="Telemetria jądra i status operacyjny" class="border-b border-[var(--color-border)] bg-[var(--bg-surface)] text-[10px] font-mono py-1 px-3 sm:px-6 flex flex-wrap justify-between items-center text-[var(--color-ink-muted)] z-50">
+  <body class="min-h-screen bg-[var(--bg-void)] text-[var(--color-ink)] selection:bg-[var(--color-blood)] selection:text-white flex flex-col font-body bg-schematic-grid relative overflow-x-hidden">
+    <!-- Czerwona linia laserowa przecinająca górę ekranu (Inspo ref 3) -->
+    <div class="h-[2px] w-full bg-[var(--color-blood)] shadow-[0_0_8px_var(--color-blood)]" aria-hidden="true"></div>
+
+    <!-- Pasek górny: Dziki, porwany manifest telemetrii -->
+    <aside aria-label="Telemetria" class="border-b border-[var(--color-border)] bg-[var(--bg-void)] text-[10px] font-mono py-1 px-3 sm:px-6 flex flex-wrap justify-between items-center text-[var(--color-ink-muted)] z-50 select-none">
       <div class="flex items-center gap-3">
-        <span class="inline-block w-2 h-2 bg-[var(--color-green)] animate-pulse" aria-hidden="true"></span>
-        <span class="text-[var(--color-green)] font-bold tracking-wider">SYS_MONITOR // KERNEL v7.4.2</span>
-        <span class="hidden md:inline text-[var(--color-border)]">|</span>
-        <span class="hidden md:inline">MEM: 98% ALLOC</span>
-        <span class="hidden lg:inline text-[var(--color-border)]">|</span>
-        <span class="hidden lg:inline">COORDS: 52.2297°N 21.0122°E</span>
-        <span class="hidden xl:inline text-[var(--color-border)]">|</span>
-        <span class="hidden xl:inline">BAUD: 115200</span>
+        <span class="inline-block w-2 h-2 bg-[var(--color-blood)] animate-ping" aria-hidden="true"></span>
+        <span class="text-[var(--color-blood)] font-bold tracking-widest breakcore-glitch">DISPATCH://FAULT_NONPAGED_AREA</span>
+        <span class="hidden md:inline text-[var(--color-border)]">///</span>
+        <span class="hidden md:inline text-[var(--color-ink)]">MEMORY_DUMP: 100%</span>
+        <span class="hidden lg:inline text-[var(--color-border)]">///</span>
+        <span class="hidden lg:inline text-[var(--color-acid)]">58.64896, -146.83960</span>
       </div>
 
-      <div class="flex items-center gap-3 sm:gap-4 mt-1 sm:mt-0">
-        <!-- Zegar UTC na żywo -->
+      <div class="flex items-center gap-3 sm:gap-5 mt-1 sm:mt-0">
         <span id="utc-clock" class="text-[var(--color-ink)] font-bold">UTC: --:--:--</span>
 
         <!-- Przełącznik Audio Web Audio API -->
         <button
           type="button"
           id="audio-toggle-btn"
-          class="px-1.5 py-0.5 border border-[var(--color-border)] hover:border-[var(--color-green)] hover:text-[var(--color-green)] transition-colors text-[9px] uppercase"
-          title="Przełącznik dźwięków terminala"
+          class="px-2 py-0.5 border border-[var(--color-border)] text-[var(--color-ink-muted)] hover:border-[var(--color-blood)] hover:text-[var(--color-blood)] transition-colors text-[9px] uppercase tracking-wider font-bold"
+          title="Przełącznik dźwięków sprzętowych"
         >
           <span id="audio-toggle-label">[AUDIO: OFF]</span>
         </button>
 
-        <!-- Przełącznik motywu: CRT Terminal / Laboratory Schematic -->
+        <!-- Przełącznik motywu (CRT Void / Spec Sheet) -->
         <button
           type="button"
           id="theme-toggle-btn"
-          class="px-1.5 py-0.5 border border-[var(--color-border)] hover:border-[var(--color-green)] hover:text-[var(--color-green)] transition-colors text-[9px] uppercase"
-          title="Przełącznik motywu: Terminal CRT / Schemat Laboratoryjny"
+          class="px-2 py-0.5 border border-[var(--color-border)] text-[var(--color-ink-muted)] hover:border-[var(--color-blood)] hover:text-[var(--color-blood)] transition-colors text-[9px] uppercase tracking-wider"
+          title="Przełącznik motywu: Mroczny Breakcore / Schemat"
         >
-          <span id="theme-toggle-label">[THEME: CRT]</span>
+          <span id="theme-toggle-label">[THEME: DARK]</span>
         </button>
 
         <a
           href={SITE.portfolio}
           target="_blank"
           rel="noopener noreferrer"
-          class="hover:text-[var(--color-green)] transition-colors hidden sm:inline"
+          class="text-[var(--color-blood)] hover:text-white transition-colors hidden sm:inline font-bold"
         >
           PORTFOLIO ↗
         </a>
       </div>
     </aside>
 
-    <!-- Główny nagłówek konsoli (Terminal Window Header) -->
-    <header class="border-b border-[var(--color-border)] sticky top-0 z-40 bg-[var(--bg-surface)]/95 backdrop-blur-md px-4 sm:px-8 py-2.5 transition-colors">
+    <!-- Nagłówek serwisu: Porwana, asymetryczna kompozycja breakcore -->
+    <header class="border-b border-[var(--color-border)] sticky top-0 z-40 bg-[var(--bg-void)]/95 backdrop-blur-md px-4 sm:px-8 py-3 transition-colors">
       <div class="max-w-7xl mx-auto flex items-center justify-between">
-        <!-- Brand / Stacja diagnostyczna -->
-        <a href={resolvePath('/')} class="group flex items-center gap-3 focus:outline-none">
-          <div class="w-3 h-3 bg-[var(--color-green)] group-hover:bg-[var(--color-red)] transition-colors"></div>
-          <div>
-            <div class="font-display font-black text-xl sm:text-2xl tracking-tighter text-[var(--color-ink)] group-hover:text-[var(--color-green)] transition-colors flex items-baseline gap-2">
-              <span>{SITE.name}</span>
-              <span class="text-[10px] font-mono px-1 border border-[var(--color-green)] text-[var(--color-green)] font-normal">
-                v7.4
-              </span>
-            </div>
-            <div class="font-mono text-[9px] text-[var(--color-ink-muted)] tracking-wider">
-              EXPERIMENTAL JOURNAL // SZYMON POTYRA
-            </div>
+        <!-- Logo / Stempel artystyczny -->
+        <a href={resolvePath('/')} class="group flex items-baseline gap-3 focus:outline-none select-none">
+          <div class="font-display font-black text-2xl sm:text-4xl tracking-tighter text-[var(--color-ink)] group-hover:text-[var(--color-blood)] transition-all transform group-hover:skew-x-[-4deg]">
+            <span class="text-[var(--color-blood)] mr-1">/</span>{SITE.wordmark}
+          </div>
+          <div class="hidden sm:inline-block font-mono text-[9px] px-1.5 py-0.5 bg-[var(--color-blood)] text-black font-extrabold rotate-2">
+            RAW BREAKCORE ART
           </div>
         </a>
 
-        <!-- Menu poleceń terminala (Desktop) -->
-        <nav aria-label="Menu główne" class="hidden md:flex items-center gap-4 lg:gap-6 font-mono text-xs">
+        <!-- Nawigacja główna (Desktop) - czysta, surowa, bez żadnych '#' -->
+        <nav aria-label="Menu główne" class="hidden md:flex items-center gap-5 lg:gap-7 font-mono text-xs">
           <a
             href={getPostsUrl()}
-            class="px-2 py-1 hover:text-[var(--color-green)] hover:border-b-2 hover:border-[var(--color-green)] transition-colors"
+            class="hover:text-[var(--color-blood)] hover:line-through decoration-[var(--color-blood)] decoration-2 transition-colors font-bold tracking-wider"
           >
-            [01/WPISY]
+            WPISY
           </a>
           <a
             href={getTagUrl('')}
-            class="px-2 py-1 hover:text-[var(--color-green)] hover:border-b-2 hover:border-[var(--color-green)] transition-colors"
+            class="hover:text-[var(--color-blood)] hover:line-through decoration-[var(--color-blood)] decoration-2 transition-colors font-bold tracking-wider"
           >
-            [02/TEMATY]
+            TEMATY
           </a>
           <a
             href={getArchiveUrl()}
-            class="px-2 py-1 hover:text-[var(--color-green)] hover:border-b-2 hover:border-[var(--color-green)] transition-colors"
+            class="hover:text-[var(--color-blood)] hover:line-through decoration-[var(--color-blood)] decoration-2 transition-colors font-bold tracking-wider"
           >
-            [03/ARCHIWUM]
+            ARCHIWUM
           </a>
 
-          <!-- Przycisk wyszukiwarki -->
+          <!-- Wyszukiwarka -->
           <button
             type="button"
             data-search-trigger
-            class="flex items-center gap-1.5 px-2.5 py-1 border border-[var(--color-border)] text-[var(--color-green)] hover:bg-[var(--color-green)] hover:text-black transition-colors"
-            title="Szukaj w rejestrze (Ctrl+K)"
+            class="flex items-center gap-1.5 px-3 py-1 border border-[var(--color-blood)] bg-[var(--bg-shard)] text-[var(--color-blood)] hover:bg-[var(--color-blood)] hover:text-black font-bold transition-all shadow-[2px_2px_0_white]"
+            title="Szukaj (Ctrl+K)"
           >
-            <span class="text-[10px]">CMD:</span>
             <span>SZUKAJ</span>
-            <kbd class="text-[9px] px-1 bg-[var(--bg-canvas)] text-[var(--color-ink)] border border-[var(--color-border)]">^K</kbd>
+            <kbd class="text-[9px] px-1 bg-[var(--bg-void)] text-white border border-[var(--color-border)]">^K</kbd>
           </button>
         </nav>
 
@@ -176,7 +169,7 @@ const resolvedOgImage = ogImage ? (ogImage.startsWith('http') ? ogImage : absolu
           <button
             type="button"
             data-search-trigger
-            class="p-2 border border-[var(--color-border)] text-[var(--color-green)] text-xs font-mono"
+            class="p-2 border border-[var(--color-blood)] text-[var(--color-blood)] text-xs font-mono font-bold"
             aria-label="Szukaj"
           >
             ^K
@@ -184,38 +177,38 @@ const resolvedOgImage = ogImage ? (ogImage.startsWith('http') ? ogImage : absolu
           <button
             type="button"
             id="mobile-menu-btn"
-            class="px-3 py-1.5 border border-[var(--color-green)] font-mono text-xs text-[var(--color-green)] font-bold"
+            class="px-3 py-1.5 border-2 border-[var(--color-blood)] bg-[var(--bg-shard)] font-mono text-xs text-[var(--color-blood)] font-black"
             aria-label="Otwórz menu nawigacji"
             aria-expanded="false"
           >
-            [MENU]
+            MENU
           </button>
         </div>
       </div>
 
       <!-- Rozwijane menu mobilne -->
-      <div id="mobile-menu" class="hidden md:hidden pt-3 pb-2 border-t border-[var(--color-border)] mt-2 font-mono text-xs">
-        <nav aria-label="Menu mobilne" class="flex flex-col gap-2">
-          <a href={getPostsUrl()} class="px-2 py-1.5 border border-[var(--color-border)] hover:text-[var(--color-green)]">
-            [01] REJESTR WPISÓW
+      <div id="mobile-menu" class="hidden md:hidden pt-4 pb-2 border-t border-[var(--color-border)] mt-3 font-mono text-xs">
+        <nav aria-label="Menu mobilne" class="flex flex-col gap-2.5">
+          <a href={getPostsUrl()} class="px-2 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-blood)] hover:text-black font-bold">
+            WPISY
           </a>
-          <a href={getTagUrl('')} class="px-2 py-1.5 border border-[var(--color-border)] hover:text-[var(--color-green)]">
-            [02] MAGISTRALA TEMATÓW
+          <a href={getTagUrl('')} class="px-2 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-blood)] hover:text-black font-bold">
+            TEMATY
           </a>
-          <a href={getArchiveUrl()} class="px-2 py-1.5 border border-[var(--color-border)] hover:text-[var(--color-green)]">
-            [03] PEŁNE ARCHIWUM DANYCH
+          <a href={getArchiveUrl()} class="px-2 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-blood)] hover:text-black font-bold">
+            ARCHIWUM
           </a>
-          <a href={SITE.portfolio} target="_blank" rel="noopener noreferrer" class="px-2 py-1.5 border border-[var(--color-border)] text-[var(--color-blue)]">
-            [↗] MAKER PORTFOLIO
+          <a href={SITE.portfolio} target="_blank" rel="noopener noreferrer" class="px-2 py-1.5 border border-[var(--color-blood)] text-[var(--color-blood)] font-bold">
+            PORTFOLIO ↗
           </a>
           <div class="pt-2 border-t border-[var(--color-border)] flex justify-between items-center px-2">
             <span class="text-xs text-[var(--color-ink-muted)]">MOTYW:</span>
             <button
               type="button"
               id="mobile-theme-toggle"
-              class="px-2 py-1 border border-[var(--color-border)] text-xs text-[var(--color-green)]"
+              class="px-2 py-1 border border-[var(--color-border)] text-xs text-[var(--color-blood)]"
             >
-              PRZEŁĄCZ CRT/SPEC 🌓
+              PRZEŁĄCZ MOTYW
             </button>
           </div>
         </nav>
@@ -227,77 +220,87 @@ const resolvedOgImage = ogImage ? (ogImage.startsWith('http') ? ogImage : absolu
       <slot />
     </main>
 
-    <!-- Techniczna stopka inżynieryjna ze schematem pinoutu PCB -->
-    <footer class="border-t border-[var(--color-border)] bg-[var(--bg-surface)] mt-24 py-12 px-4 sm:px-8 font-mono text-xs">
-      <div class="max-w-7xl mx-auto space-y-8">
-        <!-- Górna listwa schematu: pinout & memory mapping -->
-        <div class="p-4 border border-[var(--color-border)] bg-[var(--bg-canvas)] overflow-x-auto text-[10px] text-[var(--color-ink-muted)] leading-relaxed select-none" aria-hidden="true">
-          <div class="text-[var(--color-green)] font-bold mb-1">[SCHEMATIC_MAP // SYSTEM BUS PINOUT]</div>
-          <pre class="m-0 font-mono">
-PIN01: VCC_3V3  [OK] | PIN07: SPI_MISO [ACTIVE] | PIN14: CLOCK_14.3MHz [SYNC]  | PIN21: IRQ_VECTOR [0x3F]
-PIN02: GND_REF  [OK] | PIN08: SPI_MOSI [ACTIVE] | PIN15: RESET_INVERSE [HIGH]  | PIN22: MEM_DUMP   [100%]
-PIN03: UART_TXD [OK] | PIN09: SPI_CLK  [100MHz] | PIN16: DEBUG_SWDIO   [LOCKED]| PIN23: AUDIO_DAC  [SYNTH]
-PIN04: UART_RXD [OK] | PIN10: I2C_SDA  [PULLUP] | PIN17: FAULT_NONPAGE [CLEAR] | PIN24: STATUS_LED [PULSE]
-          </pre>
+    <!-- Stopka: Brutalistyczny kolaż i zrzut obwodów drukowanych -->
+    <footer class="border-t-2 border-[var(--color-blood)] bg-[var(--bg-void)] mt-24 py-12 px-4 sm:px-8 font-mono text-xs relative overflow-hidden">
+      <!-- Czerwone linie wektorowe w tle stopki -->
+      <div class="absolute inset-0 pointer-events-none opacity-20" aria-hidden="true">
+        <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <line x1="0" y1="100%" x2="100%" y2="0" stroke="var(--color-blood)" stroke-width="1" />
+          <line x1="20%" y1="0" x2="80%" y2="100%" stroke="var(--color-blood)" stroke-width="1" stroke-dasharray="4 4" />
+        </svg>
+      </div>
+
+      <div class="max-w-7xl mx-auto space-y-8 relative z-10">
+        <!-- Zrzut biletowy i kod kreskowy -->
+        <div class="p-4 border border-[var(--color-border)] bg-[var(--bg-shard)] flex flex-wrap items-center justify-between gap-4">
+          <div class="space-y-1">
+            <div class="text-[var(--color-blood)] font-extrabold tracking-widest text-sm font-display">
+              GLITCH IS THE NEW AESTHETIC // DISTORTION // CHAOS // ANOMALY // DIGITAL DECAY
+            </div>
+            <div class="text-[10px] text-[var(--color-ink-muted)]">
+              CREATOR ANCHOR [58.64896, -146.83960] // MEMORY FAULT DUMP // TORN POSTER EXPERIMENT
+            </div>
+          </div>
+          <span class="barcode-dense w-32 h-6 inline-block opacity-80" aria-hidden="true"></span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-xs">
-          <!-- Kolumna 1: Tożsamość i status -->
+          <!-- Kolumna 1 -->
           <div class="space-y-3">
-            <div class="font-display font-black text-lg text-[var(--color-green)]">
-              {SITE.wordmark} // SYSTEM DECK
+            <div class="font-display font-black text-xl text-[var(--color-blood)] tracking-tight">
+              {SITE.wordmark}
             </div>
             <p class="text-[var(--color-ink-muted)] leading-relaxed font-body text-sm">
-              Eksperymentalny dziennik inżynieryjny i devlog Szymona Potyry. Surowy poligon sprzętowo-programistyczny, generatywne ASCII, mikrokontrolery, agenci AI oraz prototypy fizyczne.
+              Artystyczny devlog i poligon inżynieryjny Szymona Potyry. 80% surowego przekazu wizualnego, breakcore, zdemontowane schematy i generatywne ASCII.
             </p>
             <div class="text-[10px] text-[var(--color-ink-muted)]">
-              &copy; {new Date().getFullYear()} {SITE.author}. ALL SYSTEMS NOMINAL.
+              &copy; {new Date().getFullYear()} {SITE.author}. BRAK KOMPROMISÓW.
             </div>
           </div>
 
-          <!-- Kolumna 2: Kanały komunikacji -->
+          <!-- Kolumna 2: Łączność -->
           <div class="space-y-2">
-            <div class="text-[var(--color-green)] font-bold tracking-wider">[COMM_CHANNELS]</div>
+            <div class="text-[var(--color-blood)] font-bold tracking-wider">KOMUNIKACJA</div>
             <ul class="space-y-1.5">
               <li>
-                <span class="text-[var(--color-ink-muted)]">MAIL:</span>{' '}
-                <a href={`mailto:${SITE.email}`} class="underline hover:text-[var(--color-green)]">
+                <span class="text-[var(--color-ink-muted)]">POCZTA:</span>{' '}
+                <a href={`mailto:${SITE.email}`} class="underline hover:text-[var(--color-blood)]">
                   {SITE.email}
                 </a>
               </li>
               <li>
                 <span class="text-[var(--color-ink-muted)]">GITHUB:</span>{' '}
-                <a href={SITE.github} target="_blank" rel="noopener noreferrer" class="underline hover:text-[var(--color-green)]">
+                <a href={SITE.github} target="_blank" rel="noopener noreferrer" class="underline hover:text-[var(--color-blood)]">
                   {SITE.githubLogin}
                 </a>
               </li>
               <li>
                 <span class="text-[var(--color-ink-muted)]">PORTFOLIO:</span>{' '}
-                <a href={SITE.portfolio} target="_blank" rel="noopener noreferrer" class="underline hover:text-[var(--color-green)]">
+                <a href={SITE.portfolio} target="_blank" rel="noopener noreferrer" class="underline hover:text-[var(--color-blood)]">
                   blankeuuu.github.io/portfolio/
                 </a>
               </li>
               <li>
-                <span class="text-[var(--color-ink-muted)]">FEED_STREAM:</span>{' '}
-                <a href={getRssUrl()} class="underline hover:text-[var(--color-green)]">
-                  rss.xml (RAW_FEED)
+                <span class="text-[var(--color-ink-muted)]">STRUMIEŃ:</span>{' '}
+                <a href={getRssUrl()} class="underline hover:text-[var(--color-blood)]">
+                  rss.xml
                 </a>
               </li>
             </ul>
           </div>
 
-          <!-- Kolumna 3: Architektura & CMS -->
+          <!-- Kolumna 3: Pages CMS & Runtime -->
           <div class="space-y-2">
-            <div class="text-[var(--color-green)] font-bold tracking-wider">[RUNTIME_ENVIRONMENT]</div>
+            <div class="text-[var(--color-blood)] font-bold tracking-wider">SYSTEM PUBLIKACJI</div>
             <p class="text-[var(--color-ink-muted)] leading-relaxed text-[11px]">
-              Engine: Astro 7 SSG // Styling: Tailwind v4 // CMS: Pages CMS // Index: Pagefind Polish // Deploy: GitHub Pages.
+              Astro 7 SSG // Pages CMS // Pagefind Search // GitHub Pages.
             </p>
             <div class="pt-2">
               <a
                 href="https://app.pagescms.org/"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-block px-3 py-1.5 border border-[var(--color-green)] text-[var(--color-green)] hover:bg-[var(--color-green)] hover:text-black font-bold text-[11px] transition-colors"
+                class="inline-block px-3 py-1.5 border border-[var(--color-blood)] bg-[var(--bg-shard)] text-[var(--color-blood)] hover:bg-[var(--color-blood)] hover:text-black font-bold text-[11px] transition-colors"
               >
                 PAGES CMS LOGIN ↗
               </a>
@@ -324,7 +327,6 @@ PIN04: UART_RXD [OK] | PIN10: I2C_SDA  [PULLUP] | PIN17: FAULT_NONPAGE [CLEAR] |
         const audioLabel = document.getElementById('audio-toggle-label');
         const clockEl = document.getElementById('utc-clock');
 
-        // Zegar UTC na żywo
         function updateClock() {
           if (!clockEl) return;
           const now = new Date();
@@ -336,16 +338,15 @@ PIN04: UART_RXD [OK] | PIN10: I2C_SDA  [PULLUP] | PIN17: FAULT_NONPAGE [CLEAR] |
         updateClock();
         setInterval(updateClock, 1000);
 
-        // Stan audio
         function updateAudioLabel() {
           if (!audioLabel) return;
           const on = isAudioEnabled();
           audioLabel.textContent = on ? '[AUDIO: ON]' : '[AUDIO: OFF]';
           if (audioBtn) {
             if (on) {
-              audioBtn.classList.add('border-[var(--color-green)]', 'text-[var(--color-green)]');
+              audioBtn.classList.add('border-[var(--color-blood)]', 'text-[var(--color-blood)]');
             } else {
-              audioBtn.classList.remove('border-[var(--color-green)]', 'text-[var(--color-green)]');
+              audioBtn.classList.remove('border-[var(--color-blood)]', 'text-[var(--color-blood)]');
             }
           }
         }
@@ -359,17 +360,15 @@ PIN04: UART_RXD [OK] | PIN10: I2C_SDA  [PULLUP] | PIN17: FAULT_NONPAGE [CLEAR] |
           }
         });
 
-        // Obsługa menu mobilnego
         mobileBtn?.addEventListener('click', () => {
           playClick();
           const isHidden = mobileMenu?.classList.toggle('hidden');
           mobileBtn.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
         });
 
-        // Przełącznik motywu (CRT Terminal / Laboratory Schematic)
         function updateThemeLabel(theme: string) {
           if (!themeLabel) return;
-          themeLabel.textContent = theme === 'light' ? '[THEME: SPEC]' : '[THEME: CRT]';
+          themeLabel.textContent = theme === 'light' ? '[THEME: SPEC]' : '[THEME: DARK]';
         }
 
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
@@ -387,10 +386,8 @@ PIN04: UART_RXD [OK] | PIN10: I2C_SDA  [PULLUP] | PIN17: FAULT_NONPAGE [CLEAR] |
         themeBtn?.addEventListener('click', triggerThemeToggle);
         mobileThemeBtn?.addEventListener('click', triggerThemeToggle);
 
-        // Dźwięk kliku dla przycisków i linków nawigacji
         document.querySelectorAll('a, button').forEach((el) => {
           el.addEventListener('mouseenter', () => {
-            // Cichy mikro-impuls przy najechaniu na ważne przyciski
             if (el.hasAttribute('data-search-trigger') || el.id === 'audio-toggle-btn' || el.id === 'theme-toggle-btn') {
               playClick();
             }
