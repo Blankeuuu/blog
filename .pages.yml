@@ -19,7 +19,7 @@ content:
     type: collection
     path: src/content/posts
     filename:
-      template: "{year}-{month}-{day}-{slug}.md"
+      template: "{slug}-{year}-{month}-{day}.md"
       field: create
     view:
       fields: [title, date, draft, tags]
