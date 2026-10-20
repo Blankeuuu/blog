@@ -35,6 +35,7 @@ content:
         required: true
         options:
           maxlength: 160
+
       - name: slug
         label: Slug (identyfikator URL)
         type: string
@@ -44,12 +45,14 @@ content:
           message: "Tylko małe litery a-z, cyfry i pojedyncze myślniki (np. moj-pierwszy-wpis)"
         options:
           maxlength: 80
+
       - name: excerpt
         label: Krótki opis (zajawka)
         type: text
         required: true
         options:
           maxlength: 320
+
       - name: date
         label: Data publikacji
         type: date
@@ -57,59 +60,67 @@ content:
         options:
           time: true
           format: "yyyy-MM-dd'T'HH:mm"
+
       - name: updated
         label: Data aktualizacji (opcjonalnie)
         type: date
         options:
           time: true
           format: "yyyy-MM-dd'T'HH:mm"
+
       - name: draft
         label: Szkic (nie publikuj publicznie)
         type: boolean
         default: false
+
       - name: featured
         label: Wyróżniony wpis
         type: boolean
         default: false
+
       - name: tags
         label: Tagi / Tematyka
         type: select
         list: true
         options:
-          values:
-            - name: refleksje
-              label: Refleksje
-            - name: fotografia
-              label: Fotografia i eksperymenty
-            - name: diy-maker
-              label: DIY / Maker
-            - name: ai-agenci
-              label: AI i agenci kodujący
-            - name: elektronika-esp32
-              label: Elektronika i ESP32
-            - name: cad-freecad
-              label: CAD i FreeCAD
-            - name: druk-3d
-              label: Druk 3D
-            - name: programowanie
-              label: Programowanie
-            - name: smart-home
-              label: Smart Home
+          - label: Refleksje
+            value: refleksje
+          - label: Fotografia i eksperymenty
+            value: fotografia
+          - label: DIY / Maker
+            value: diy-maker
+          - label: AI i agenci kodujący
+            value: ai-agenci
+          - label: Elektronika i ESP32
+            value: elektronika-esp32
+          - label: CAD i FreeCAD
+            value: cad-freecad
+          - label: Druk 3D
+            value: druk-3d
+          - label: Programowanie
+            value: programowanie
+          - label: Smart Home
+            value: smart-home
+
       - name: cover
         label: Zdjęcie okładkowe
         type: image
         options:
           media: images
+
       - name: coverAlt
         label: Opis zdjęcia okładkowego (alt)
         type: string
+
       - name: seed
         label: Ziarno grafiki ASCII (opcjonalnie)
         type: string
         description: Zostaw puste dla automatycznego ziarna opartego na slugu wpisu
+
       - name: seoDescription
         label: Opis SEO (opcjonalnie)
         type: string
+
       - name: blocks
         label: Sekcje multimedialne artykułu
         type: block
@@ -129,6 +140,7 @@ content:
                   format: markdown
                   switcher: true
                   media: images
+
           - name: image
             label: Zdjęcie
             fields:
@@ -150,13 +162,13 @@ content:
                 type: select
                 default: szeroki
                 options:
-                  values:
-                    - name: tekst
-                      label: Szerokość kolumny tekstu
-                    - name: szeroki
-                      label: Szeroki (wyłamany z kolumny)
-                    - name: pelny
-                      label: Pełna szerokość
+                  - label: Szerokość kolumny tekstu
+                    value: tekst
+                  - label: Szeroki (wyłamany z kolumny)
+                    value: szeroki
+                  - label: Pełna szerokość
+                    value: pelny
+
           - name: gallery
             label: Galeria zdjęć
             fields:
@@ -181,7 +193,8 @@ content:
                   - name: caption
                     label: Podpis (opcjonalnie)
                     type: string
-- name: code_block
+
+          - name: code_block
             label: Blok kodu
             fields:
               - name: language
@@ -231,6 +244,7 @@ content:
               - name: code
                 label: Kod źródłowy
                 type: text
+
           - name: video
             label: Wideo (YouTube lub plik MP4/WebM)
             fields:
@@ -255,6 +269,7 @@ content:
               - name: caption
                 label: Podpis wideo (opcjonalnie)
                 type: string
+
           - name: model
             label: Model 3D (GLB)
             fields:
@@ -277,6 +292,7 @@ content:
                 type: image
                 options:
                   media: images
+
       - name: body
         label: Treść uzupełniająca (zwykły Markdown na początku wpisu)
         type: rich-text
