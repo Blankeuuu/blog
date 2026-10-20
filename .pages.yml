@@ -181,7 +181,7 @@ content:
                   - name: caption
                     label: Podpis (opcjonalnie)
                     type: string
-          - name: code
+- name: code_block
             label: Blok kodu
             fields:
               - name: language
@@ -189,49 +189,48 @@ content:
                 type: select
                 default: text
                 options:
-                  values:
-                    - name: text
-                      label: Zwykły tekst
-                    - name: bash
-                      label: Bash / Shell
-                    - name: powershell
-                      label: PowerShell
-                    - name: c
-                      label: C
-                    - name: cpp
-                      label: C++
-                    - name: python
-                      label: Python
-                    - name: javascript
-                      label: JavaScript
-                    - name: typescript
-                      label: TypeScript
-                    - name: json
-                      label: JSON
-                    - name: yaml
-                      label: YAML
-                    - name: html
-                      label: HTML
-                    - name: css
-                      label: CSS
-                    - name: astro
-                      label: Astro
-                    - name: markdown
-                      label: Markdown
-                    - name: ini
-                      label: INI
-                    - name: toml
-                      label: TOML
-                    - name: diff
-                      label: Git Diff
-                    - name: sql
-                      label: SQL
+                  - label: Zwykły tekst
+                    value: text
+                  - label: Bash / Shell
+                    value: bash
+                  - label: PowerShell
+                    value: powershell
+                  - label: C
+                    value: c
+                  - label: C++
+                    value: cpp
+                  - label: Python
+                    value: python
+                  - label: JavaScript
+                    value: javascript
+                  - label: TypeScript
+                    value: typescript
+                  - label: JSON
+                    value: json
+                  - label: YAML
+                    value: yaml
+                  - label: HTML
+                    value: html
+                  - label: CSS
+                    value: css
+                  - label: Astro
+                    value: astro
+                  - label: Markdown
+                    value: markdown
+                  - label: INI
+                    value: ini
+                  - label: TOML
+                    value: toml
+                  - label: Git Diff
+                    value: diff
+                  - label: SQL
+                    value: sql
               - name: filename
                 label: Nazwa pliku / etykieta (opcjonalnie)
                 type: string
               - name: code
                 label: Kod źródłowy
-                type: code
+                type: text
           - name: video
             label: Wideo (YouTube lub plik MP4/WebM)
             fields:
