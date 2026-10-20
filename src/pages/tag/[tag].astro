@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/articles/PostCard.astro';
+import EmptyState from '../../components/editorial/EmptyState.astro';
+import { TAGS } from '../../data/tags.mjs';
+import { getPostsByTag } from '../../lib/posts';
+
+export function getStaticPaths() {
+  return TAGS.map((t) => ({
+    params: { tag: t.slug },
+    props: { currentTag: t },
+  }));
+}
+
+const { currentTag } = Astro.props;
+const posts = await getPostsByTag(currentTag.slug);
+const hasPosts = posts.length > 0;
+---
+
+<BaseLayout
+  title={`Tag: ${currentTag.label}`}
+  description={`Wpisy z kategorii ${currentTag.label} — notatki i projekty Szymona Potyry.`}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-8 py-12">
+    <!-- Belka nagłówka kategorii -->
+    <header class="border-b-2 border-[var(--color-blue)] pb-6 mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 font-mono text-xs text-[var(--color-magenta)]">
+          <span class="inline-block w-2.5 h-2.5 bg-[var(--color-magenta)]"></span>
+          <span>[KATEGORIA // #{currentTag.short}]</span>
+        </div>
+        <h1 class="font-display font-black text-4xl sm:text-5xl text-[var(--color-ink)] tracking-tight mt-1">
+          {currentTag.label}
+        </h1>
+      </div>
+
+      <div class="font-mono text-xs text-[var(--color-ink-muted)]">
+        WPISÓW: <strong>{posts.length}</strong>
+      </div>
+    </header>
+
+    <!-- Lista wpisów dla wybranego tagu -->
+    {hasPosts ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        {posts.map((post, idx) => (
+          <PostCard post={post} index={idx + 1} />
+        ))}
+      </div>
+    ) : (
+      <EmptyState
+        isTagFilter={true}
+        message={`W kategorii „${currentTag.label}” nie opublikowano jeszcze żadnych wpisów. Nowe publikacje pojawią się wkrótce.`}
+      />
+    )}
+  </div>
+</BaseLayout>

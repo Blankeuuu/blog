@@ -1,0 +1,308 @@
+---
+import '../styles/global.css';
+import { SITE, resolvePath, absoluteUrl, getRssUrl, getPostsUrl, getArchiveUrl, getTagUrl } from '../lib/urls';
+import SearchModal from '../components/editorial/SearchModal.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  articleDate?: Date;
+  articleTags?: string[];
+  canonicalUrl?: string;
+}
+
+const {
+  title,
+  description = SITE.description,
+  ogImage,
+  articleDate,
+  articleTags,
+  canonicalUrl,
+} = Astro.props;
+
+const pageTitle = title ? `${title} — ${SITE.name}` : `${SITE.name} — ${SITE.author}`;
+const canonical = canonicalUrl || absoluteUrl(Astro.url.pathname);
+const resolvedOgImage = ogImage ? (ogImage.startsWith('http') ? ogImage : absoluteUrl(ogImage)) : absoluteUrl('/og-default.png');
+---
+
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={SITE.author} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph & Social -->
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content={articleDate ? 'article' : 'website'} />
+    <meta property="og:image" content={resolvedOgImage} />
+    <meta property="og:locale" content={SITE.locale} />
+    {articleDate && <meta property="article:published_time" content={articleDate.toISOString()} />}
+    {articleTags?.map((tag) => <meta property="article:tag" content={tag} />)}
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={resolvedOgImage} />
+
+    <!-- RSS & Sitemap -->
+    <link rel="alternate" type="application/rss+xml" title={`${SITE.name} (RSS 2.0)`} href={getRssUrl()} />
+    <link rel="sitemap" href={resolvePath('/sitemap-index.xml')} />
+
+    <!-- Inline script zapobiegający mignięciu motywu (FOUC) -->
+    <script is:inline>
+      (function() {
+        const stored = localStorage.getItem('blankeu-theme');
+        if (stored === 'dark' || stored === 'light') {
+          document.documentElement.setAttribute('data-theme', stored);
+        } else {
+          // Śledź preferencje systemowe
+          const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        }
+      })();
+    </script>
+  </head>
+
+  <body class="min-h-screen bg-[var(--bg-paper)] text-[var(--color-ink)] selection:bg-[var(--color-magenta)] selection:text-white flex flex-col font-body">
+    <!-- Górny pasek z informacjami zine / telemetry -->
+    <aside aria-label="Informacje nagłówka" class="border-b border-[var(--color-border)] bg-[var(--color-grid)] text-[10px] font-mono py-1 px-4 flex justify-between items-center text-[var(--color-ink-muted)]">
+      <div class="flex items-center gap-3">
+        <span class="inline-block w-2 h-2 rounded-full bg-[var(--color-magenta)] animate-pulse" aria-hidden="true"></span>
+        <span class="tracking-wider">SYS.JOURNAL // REV.2026</span>
+        <span class="hidden sm:inline">|</span>
+        <span class="hidden sm:inline">AUTOR: {SITE.author.toUpperCase()}</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href={SITE.portfolio} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-blue)] transition-colors">
+          MAKER PORTFOLIO ↗
+        </a>
+      </div>
+    </aside>
+
+    <!-- Główny nagłówek strony -->
+    <header class="border-b-2 border-[var(--color-blue)] sticky top-0 z-40 bg-[var(--bg-paper)]/95 backdrop-blur-md px-4 sm:px-8 py-3 transition-colors">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <!-- Logo / Brandmark -->
+        <a href={resolvePath('/')} class="group flex items-baseline gap-2">
+          <span class="font-display font-black text-2xl sm:text-3xl tracking-tight text-[var(--color-ink)] group-hover:text-[var(--color-magenta)] transition-colors">
+            {SITE.name}
+          </span>
+          <span class="hidden md:inline font-mono text-[10px] px-1.5 py-0.5 border border-[var(--color-border)] text-[var(--color-blue)]">
+            DEVLOG
+          </span>
+        </a>
+
+        <!-- Nawigacja główna -->
+        <nav aria-label="Menu główne" class="hidden md:flex items-center gap-6 font-mono text-xs">
+          <a
+            href={getPostsUrl()}
+            class="hover:text-[var(--color-magenta)] hover:underline decoration-2 underline-offset-4 transition-colors"
+          >
+            WPISY
+          </a>
+          <a
+            href={getTagUrl('')}
+            class="hover:text-[var(--color-magenta)] hover:underline decoration-2 underline-offset-4 transition-colors"
+          >
+            TEMATY
+          </a>
+          <a
+            href={getArchiveUrl()}
+            class="hover:text-[var(--color-magenta)] hover:underline decoration-2 underline-offset-4 transition-colors"
+          >
+            ARCHIWUM
+          </a>
+
+          <!-- Wyszukiwarka -->
+          <button
+            type="button"
+            data-search-trigger
+            class="flex items-center gap-1.5 px-2.5 py-1 border border-[var(--color-border)] text-[var(--color-blue)] hover:border-[var(--color-magenta)] hover:text-[var(--color-magenta)] transition-colors"
+            title="Szukaj (Ctrl+K)"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <span>SZUKAJ</span>
+            <kbd class="text-[9px] px-1 border border-[var(--color-border)]">^K</kbd>
+          </button>
+
+          <!-- Przełącznik motywu -->
+          <button
+            type="button"
+            id="theme-toggle-btn"
+            class="p-1.5 border border-[var(--color-border)] hover:bg-[var(--color-accent-soft)] transition-colors text-[var(--color-ink)]"
+            aria-label="Przełącz motyw jasny/ciemny"
+          >
+            <span class="sr-only">Motyw</span>
+            <span id="theme-toggle-icon" class="text-xs">🌓</span>
+          </button>
+        </nav>
+
+        <!-- Przycisk menu mobilnego -->
+        <div class="flex items-center gap-2 md:hidden">
+          <button
+            type="button"
+            data-search-trigger
+            class="p-2 border border-[var(--color-border)] text-[var(--color-blue)]"
+            aria-label="Szukaj"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            id="mobile-menu-btn"
+            class="p-2 border border-[var(--color-blue)] font-mono text-xs font-bold"
+            aria-label="Otwórz menu nawigacji"
+            aria-expanded="false"
+          >
+            MENU
+          </button>
+        </div>
+      </div>
+
+      <!-- Rozwijane menu mobilne -->
+      <div id="mobile-menu" class="hidden md:hidden pt-4 pb-2 border-t border-[var(--color-border)] mt-3">
+        <nav aria-label="Menu mobilne" class="flex flex-col gap-3 font-mono text-sm">
+          <a href={getPostsUrl()} class="px-2 py-1.5 hover:bg-[var(--color-accent-soft)]">
+            [1] WPISY
+          </a>
+          <a href={getTagUrl('')} class="px-2 py-1.5 hover:bg-[var(--color-accent-soft)]">
+            [2] TEMATY
+          </a>
+          <a href={getArchiveUrl()} class="px-2 py-1.5 hover:bg-[var(--color-accent-soft)]">
+            [3] ARCHIWUM
+          </a>
+          <a href={SITE.portfolio} target="_blank" rel="noopener noreferrer" class="px-2 py-1.5 text-[var(--color-blue)]">
+            [↗] PORTFOLIO
+          </a>
+          <div class="pt-2 border-t border-[var(--color-border)] flex justify-between items-center px-2">
+            <span class="text-xs text-[var(--color-ink-muted)]">MOTYW:</span>
+            <button
+              type="button"
+              id="mobile-theme-toggle"
+              class="px-2 py-1 border border-[var(--color-border)] text-xs"
+            >
+              PRZEŁĄCZ 🌓
+            </button>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Główna zawartość strony -->
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <!-- Stopka autorska i kontaktowa -->
+    <footer class="border-t-2 border-[var(--color-blue)] bg-[var(--bg-paper)] mt-24 py-12 px-4 sm:px-8">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-xs font-mono">
+        <!-- Kolumna 1: Tożsamość -->
+        <div class="space-y-3">
+          <div class="font-display font-black text-lg text-[var(--color-magenta)]">
+            {SITE.wordmark} // JOURNAL
+          </div>
+          <p class="text-[var(--color-ink-muted)] leading-relaxed font-body text-sm">
+            Eksperymentalny osobisty devlog Szymona Potyry. Połączenie estetyki risograph, breakcore oraz szwajcarskiej dyscypliny typograficznej.
+          </p>
+          <div class="text-[var(--color-ink-muted)]">
+            &copy; {new Date().getFullYear()} {SITE.author}. Wszelkie prawa zastrzeżone.
+          </div>
+        </div>
+
+        <!-- Kolumna 2: Kontakt & Sieć -->
+        <div class="space-y-2">
+          <div class="text-[var(--color-blue)] font-bold tracking-wider">[KONTAKT & SIEĆ]</div>
+          <ul class="space-y-1.5">
+            <li>
+              <span class="text-[var(--color-ink-muted)]">E-MAIL:</span>{' '}
+              <a href={`mailto:${SITE.email}`} class="underline hover:text-[var(--color-magenta)]">
+                {SITE.email}
+              </a>
+            </li>
+            <li>
+              <span class="text-[var(--color-ink-muted)]">GITHUB:</span>{' '}
+              <a href={SITE.github} target="_blank" rel="noopener noreferrer" class="underline hover:text-[var(--color-magenta)]">
+                {SITE.githubLogin}
+              </a>
+            </li>
+            <li>
+              <span class="text-[var(--color-ink-muted)]">PORTFOLIO:</span>{' '}
+              <a href={SITE.portfolio} target="_blank" rel="noopener noreferrer" class="underline hover:text-[var(--color-magenta)]">
+                blankeuuu.github.io/portfolio/
+              </a>
+            </li>
+            <li>
+              <span class="text-[var(--color-ink-muted)]">KANAŁ:</span>{' '}
+              <a href={getRssUrl()} class="underline hover:text-[var(--color-magenta)]">
+                RSS Feed (XML)
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Kolumna 3: Stack & CMS -->
+        <div class="space-y-2">
+          <div class="text-[var(--color-blue)] font-bold tracking-wider">[ARCHITEKTURA]</div>
+          <p class="text-[var(--color-ink-muted)] leading-relaxed">
+            Statyczna kompilacja Astro 7, Tailwind CSS v4, Pages CMS, Pagefind Search. Hostowane na GitHub Pages.
+          </p>
+          <div class="pt-2">
+            <a
+              href="https://app.pagescms.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-block px-2 py-1 border border-[var(--color-border)] hover:bg-[var(--color-accent-soft)] text-[11px]"
+            >
+              PAGES CMS LOGIN ↗
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Modal wyszukiwarki -->
+    <SearchModal />
+
+    <!-- Skrypt obsługi menu i przełącznika motywów -->
+    <script>
+      function initLayoutScripts() {
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const themeBtn = document.getElementById('theme-toggle-btn');
+        const mobileThemeBtn = document.getElementById('mobile-theme-toggle');
+
+        mobileBtn?.addEventListener('click', () => {
+          const isHidden = mobileMenu?.classList.toggle('hidden');
+          mobileBtn.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
+        });
+
+        function toggleTheme() {
+          const current = document.documentElement.getAttribute('data-theme') || 'light';
+          const next = current === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', next);
+          localStorage.setItem('blankeu-theme', next);
+        }
+
+        themeBtn?.addEventListener('click', toggleTheme);
+        mobileThemeBtn?.addEventListener('click', toggleTheme);
+      }
+
+      if (typeof document !== 'undefined') {
+        initLayoutScripts();
+        document.addEventListener('astro:page-load', initLayoutScripts);
+      }
+    </script>
+  </body>
+</html>

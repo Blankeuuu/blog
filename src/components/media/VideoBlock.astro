@@ -1,0 +1,95 @@
+---
+import { parseYouTubeId } from '../../lib/content-rules.mjs';
+import { resolvePath } from '../../lib/urls';
+
+interface Props {
+  title: string;
+  youtube?: string;
+  file?: string;
+  poster?: string;
+  caption?: string;
+}
+
+const { title, youtube, file, poster, caption } = Astro.props;
+
+const youtubeId = youtube ? parseYouTubeId(youtube) : null;
+const videoFileSrc = file ? resolvePath(file) : null;
+const posterSrc = poster ? resolvePath(poster) : undefined;
+---
+
+<figure class="my-10 max-w-4xl mx-auto" aria-label={`Wideo: ${title}`}>
+  <div class="relative overflow-hidden border-2 border-[var(--color-blue)] bg-black/90 aspect-video">
+    {youtubeId ? (
+      <div class="yt-container relative w-full h-full flex items-center justify-center group" data-yt-id={youtubeId}>
+        <img
+          src={`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`}
+          alt={`Miniaturka filmu YouTube: ${title}`}
+          class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+          loading="lazy"
+        />
+        <button
+          type="button"
+          class="yt-play-btn absolute inset-0 w-full h-full flex flex-col items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors focus:outline-none focus:ring-4 focus:ring-[var(--color-magenta)]"
+          aria-label={`Odtwórz wideo: ${title}`}
+        >
+          <div class="w-16 h-12 bg-[var(--color-magenta)] text-white flex items-center justify-center font-mono font-bold text-sm tracking-wider shadow-lg transform group-hover:scale-110 transition-transform">
+            <span>&#9654; GRAJ</span>
+          </div>
+          <span class="mt-3 font-mono text-xs text-white bg-black/70 px-2 py-0.5 border border-white/20">
+            KLIKNIJ ABY ZAŁADOWAĆ (YOUTUBE)
+          </span>
+        </button>
+      </div>
+    ) : videoFileSrc ? (
+      <video
+        controls
+        preload="metadata"
+        poster={posterSrc}
+        class="w-full h-full object-contain"
+      >
+        <source src={videoFileSrc} type={videoFileSrc.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
+        Twoja przeglądarka nie obsługuje elementu wideo.
+      </video>
+    ) : (
+      <div class="w-full h-full flex items-center justify-center font-mono text-xs text-[var(--color-magenta)]">
+        [BRAK ŹRÓDŁA WIDEO]
+      </div>
+    )}
+  </div>
+
+  <figcaption class="mt-2 text-xs font-mono text-[var(--color-ink-muted)] flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <span class="text-[var(--color-blue)] font-bold">[WIDEO]</span>
+      <span>{caption || title}</span>
+    </div>
+    {youtubeId && <span class="text-[10px]">YouTube (prywatny embed)</span>}
+  </figcaption>
+</figure>
+
+<script>
+  function initYouTubePlayers() {
+    document.querySelectorAll<HTMLElement>('.yt-container').forEach((container) => {
+      const btn = container.querySelector('.yt-play-btn');
+      const ytId = container.dataset.ytId;
+      if (!btn || !ytId) return;
+
+      btn.addEventListener('click', () => {
+        const iframe = document.createElement('iframe');
+        iframe.setAttribute('src', `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0`);
+        iframe.setAttribute('title', 'YouTube video player');
+        iframe.setAttribute('frameborder', '0');
+        iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+        iframe.setAttribute('allowfullscreen', 'true');
+        iframe.className = 'w-full h-full absolute inset-0';
+
+        container.innerHTML = '';
+        container.appendChild(iframe);
+      });
+    });
+  }
+
+  if (typeof document !== 'undefined') {
+    initYouTubePlayers();
+    document.addEventListener('astro:page-load', initYouTubePlayers);
+  }
+</script>

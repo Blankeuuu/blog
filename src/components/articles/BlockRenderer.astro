@@ -1,0 +1,70 @@
+---
+import type { Block } from '../../lib/schema';
+import ImageBlock from '../media/ImageBlock.astro';
+import GalleryBlock from '../media/GalleryBlock.astro';
+import CodeBlock from '../media/CodeBlock.astro';
+import VideoBlock from '../media/VideoBlock.astro';
+import ModelViewerBlock from '../media/ModelViewerBlock.astro';
+import { renderMarkdown } from '../../lib/markdown';
+
+interface Props {
+  block: Block;
+}
+
+const { block } = Astro.props;
+
+let renderedHtml = '';
+if (block.type === 'text') {
+  renderedHtml = await renderMarkdown(block.body);
+}
+---
+
+{block.type === 'text' && (
+  <div
+    class="prose-journal max-w-2xl mx-auto my-6 font-body text-base sm:text-lg leading-relaxed text-[var(--color-ink)]"
+    set:html={renderedHtml}
+  />
+)}
+
+{block.type === 'image' && (
+  <ImageBlock
+    image={block.image}
+    alt={block.alt}
+    caption={block.caption}
+    width={block.width}
+  />
+)}
+
+{block.type === 'gallery' && (
+  <GalleryBlock
+    images={block.images}
+    caption={block.caption}
+  />
+)}
+
+{block.type === 'code' && (
+  <CodeBlock
+    code={block.code}
+    language={block.language}
+    filename={block.filename}
+  />
+)}
+
+{block.type === 'video' && (
+  <VideoBlock
+    title={block.title}
+    youtube={block.youtube}
+    file={block.file}
+    poster={block.poster}
+    caption={block.caption}
+  />
+)}
+
+{block.type === 'model' && (
+  <ModelViewerBlock
+    file={block.file}
+    alt={block.alt}
+    caption={block.caption}
+    poster={block.poster}
+  />
+)}

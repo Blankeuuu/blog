@@ -1,0 +1,205 @@
+---
+import { getBaseUrl } from '../../lib/urls';
+
+const baseUrl = getBaseUrl();
+---
+
+<div
+  id="search-dialog"
+  class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm transition-opacity"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Wyszukiwarka wpisów"
+>
+  <div class="min-h-screen px-4 text-center sm:p-0 flex items-start justify-center pt-16 sm:pt-24">
+    <div
+      class="relative w-full max-w-2xl transform overflow-hidden border border-[var(--color-border)] bg-[var(--bg-paper)] p-6 text-left shadow-2xl transition-all sm:my-8"
+      id="search-box"
+    >
+      <div class="flex items-center justify-between border-b border-[var(--color-border)] pb-3">
+        <div class="flex items-center gap-2">
+          <span class="font-mono text-xs text-[var(--color-magenta)]">[SZUKAJ]</span>
+          <h2 class="font-display text-lg font-bold tracking-tight text-[var(--color-ink)]">
+            Wyszukiwarka artykułów
+          </h2>
+        </div>
+        <button
+          type="button"
+          id="search-close-btn"
+          class="font-mono text-xs px-2 py-1 border border-[var(--color-border)] hover:bg-[var(--color-accent-soft)] transition-colors"
+          aria-label="Zamknij wyszukiwarkę"
+        >
+          ESC / [X]
+        </button>
+      </div>
+
+      <div class="mt-4">
+        <div class="relative">
+          <input
+            type="search"
+            id="search-input"
+            class="w-full border-2 border-[var(--color-blue)] bg-transparent px-4 py-3 font-mono text-sm text-[var(--color-ink)] placeholder-[var(--color-ink-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-magenta)]"
+            placeholder="Wpisz frazę (np. ESP32, FreeCAD, agent)..."
+            autocomplete="off"
+          />
+        </div>
+      </div>
+
+      <div class="mt-4 max-h-96 overflow-y-auto" id="search-results">
+        <div id="search-initial" class="py-8 text-center text-xs font-mono text-[var(--color-ink-muted)]">
+          Wpisz co najmniej 2 znaki, aby przeszukać opublikowane notatki.
+        </div>
+        <div id="search-loading" class="hidden py-8 text-center text-xs font-mono text-[var(--color-blue)]">
+          Przeszukiwanie indeksu...
+        </div>
+        <div id="search-empty" class="hidden py-8 text-center text-xs font-mono text-[var(--color-magenta)]">
+          Brak wyników dla podanej frazy.
+        </div>
+        <ul id="search-list" class="space-y-3 divide-y divide-[var(--color-border)]"></ul>
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-[var(--color-border)] flex justify-between items-center text-[10px] font-mono text-[var(--color-ink-muted)]">
+        <span>Powered by Pagefind (język polski)</span>
+        <span>Naciśnij <kbd class="px-1 border border-[var(--color-border)]">ESC</kbd> aby wyjść</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ baseUrl }}>
+  let pagefind = null;
+  let searchTimeout = null;
+
+  async function loadPagefind() {
+    if (pagefind) return pagefind;
+    try {
+      const pagefindPath = `${baseUrl}pagefind/pagefind.js`;
+      pagefind = await import(/* @vite-ignore */ pagefindPath);
+      await pagefind.init();
+      return pagefind;
+    } catch (err) {
+      console.warn('Pagefind index not found (normal during local dev before build):', err);
+      return null;
+    }
+  }
+
+  function initSearchModal() {
+    const dialog = document.getElementById('search-dialog');
+    const input = document.getElementById('search-input');
+    const closeBtn = document.getElementById('search-close-btn');
+    const initialMsg = document.getElementById('search-initial');
+    const loadingMsg = document.getElementById('search-loading');
+    const emptyMsg = document.getElementById('search-empty');
+    const list = document.getElementById('search-list');
+
+    if (!dialog || !input) return;
+
+    function openModal() {
+      dialog.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => input.focus(), 50);
+      loadPagefind();
+    }
+
+    function closeModal() {
+      dialog.classList.add('hidden');
+      document.body.style.overflow = '';
+      input.value = '';
+      if (list) list.innerHTML = '';
+      if (initialMsg) initialMsg.classList.remove('hidden');
+      if (emptyMsg) emptyMsg.classList.add('hidden');
+      if (loadingMsg) loadingMsg.classList.add('hidden');
+    }
+
+    // Otwieranie przyciskami z atrybutem data-search-trigger
+    document.querySelectorAll('[data-search-trigger]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openModal();
+      });
+    });
+
+    closeBtn?.addEventListener('click', closeModal);
+
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) closeModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        openModal();
+      }
+      if (e.key === 'Escape' && !dialog.classList.contains('hidden')) {
+        closeModal();
+      }
+    });
+
+    input.addEventListener('input', () => {
+      const query = input.value.trim();
+      clearTimeout(searchTimeout);
+
+      if (query.length < 2) {
+        if (list) list.innerHTML = '';
+        initialMsg?.classList.remove('hidden');
+        loadingMsg?.classList.add('hidden');
+        emptyMsg?.classList.add('hidden');
+        return;
+      }
+
+      initialMsg?.classList.add('hidden');
+      loadingMsg?.classList.remove('hidden');
+      emptyMsg?.classList.add('hidden');
+
+      searchTimeout = setTimeout(async () => {
+        const pf = await loadPagefind();
+        if (!pf) {
+          loadingMsg?.classList.add('hidden');
+          if (list) {
+            list.innerHTML = `
+              <li class="py-4 text-xs font-mono text-[var(--color-ink-muted)]">
+                Indeks Pagefind nie jest jeszcze wygenerowany lokalnie.<br/>
+                Uruchom <code class="text-[var(--color-magenta)]">npm run build</code>, aby zbudować statyczny indeks wyszukiwarki.
+              </li>
+            `;
+          }
+          return;
+        }
+
+        const search = await pf.search(query);
+        loadingMsg?.classList.add('hidden');
+
+        if (!search.results || search.results.length === 0) {
+          emptyMsg?.classList.remove('hidden');
+          if (list) list.innerHTML = '';
+          return;
+        }
+
+        emptyMsg?.classList.add('hidden');
+        const results = await Promise.all(search.results.slice(0, 8).map((r) => r.data()));
+
+        if (list) {
+          list.innerHTML = results
+            .map((res) => `
+              <li class="pt-3 first:pt-0">
+                <a href="${res.url}" class="block group">
+                  <div class="font-display font-bold text-sm text-[var(--color-blue)] group-hover:text-[var(--color-magenta)] transition-colors">
+                    ${res.meta.title || 'Wpis bez tytułu'}
+                  </div>
+                  <div class="text-xs text-[var(--color-ink-muted)] mt-1 font-body line-clamp-2">
+                    ${res.excerpt}
+                  </div>
+                </a>
+              </li>
+            `)
+            .join('');
+        }
+      }, 250);
+    });
+  }
+
+  if (typeof document !== 'undefined') {
+    initSearchModal();
+    document.addEventListener('astro:page-load', initSearchModal);
+  }
+</script>

@@ -1,0 +1,67 @@
+---
+import AsciiArt from '../ascii/AsciiArt.astro';
+import { SITE } from '../../lib/urls';
+
+interface Props {
+  message?: string;
+  isTagFilter?: boolean;
+}
+
+const { message, isTagFilter = false } = Astro.props;
+---
+
+<section class="my-16 max-w-4xl mx-auto border-2 border-[var(--color-blue)] bg-[var(--color-card)] p-8 sm:p-12 relative overflow-hidden">
+  <!-- Ozdobny narożnik riso -->
+  <div class="absolute top-0 right-0 w-16 h-16 bg-[var(--color-magenta)] text-white font-mono text-[10px] flex items-center justify-center rotate-45 translate-x-6 -translate-y-6">
+    BLANKEU
+  </div>
+
+  <div class="flex items-center gap-3 font-mono text-xs text-[var(--color-magenta)] mb-4">
+    <span class="inline-block w-2.5 h-2.5 bg-[var(--color-magenta)]"></span>
+    <span>{isTagFilter ? '[WYNIK FILTROWANIA]' : '[STATUS // WYDANIE #00]'}</span>
+  </div>
+
+  <h2 class="font-display font-black text-3xl sm:text-4xl text-[var(--color-ink)] tracking-tight">
+    {isTagFilter
+      ? 'Brak wpisów w wybranej kategorii'
+      : 'Dziennik w przygotowaniu — oczekiwanie na pierwszy wpis'}
+  </h2>
+
+  <div class="my-8 border border-[var(--color-border)] bg-[var(--bg-paper)] p-4 overflow-hidden flex items-center justify-center">
+    <AsciiArt seed="empty-journal-blankeu" cols={52} rows={12} style="dither-cluster" themeColor="blue" />
+  </div>
+
+  <div class="font-body text-base sm:text-lg text-[var(--color-ink-muted)] leading-relaxed space-y-4 max-w-2xl">
+    {message ? (
+      <p>{message}</p>
+    ) : (
+      <>
+        <p>
+          Ten dziennik to przestrzeń na surowe notatki warsztatowe, proces twórczy, prototypy urządzeń, eksperymenty z agentami AI oraz modele CAD i druk 3D.
+        </p>
+        <p class="text-sm font-mono text-[var(--color-ink)]">
+          Aby dodać pierwszy wpis, zaloguj się do panelu <strong>Pages CMS</strong> powiązanego z repozytorium GitHub lub dodaj plik Markdown w katalogu <code>src/content/posts/</code>.
+        </p>
+      </>
+    )}
+  </div>
+
+  <div class="mt-8 pt-6 border-t border-[var(--color-border)] flex flex-wrap gap-4 font-mono text-xs">
+    <a
+      href="https://app.pagescms.org/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="px-4 py-2 border-2 border-[var(--color-blue)] text-[var(--color-blue)] hover:bg-[var(--color-blue)] hover:text-white transition-colors"
+    >
+      OTWÓRZ PAGES CMS ↗
+    </a>
+    <a
+      href={SITE.portfolio}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="px-4 py-2 border border-[var(--color-border)] hover:bg-[var(--color-accent-soft)] transition-colors"
+    >
+      ZOBACZ MAKER PORTFOLIO ↗
+    </a>
+  </div>
+</section>

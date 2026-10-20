@@ -1,0 +1,56 @@
+---
+import { Image } from 'astro:assets';
+import { resolveImage } from '../../lib/images';
+import { resolvePath } from '../../lib/urls';
+
+interface Props {
+  image: string;
+  alt: string;
+  caption?: string;
+  width?: 'tekst' | 'szeroki' | 'pelny';
+}
+
+const { image, alt, caption, width = 'szeroki' } = Astro.props;
+
+const imageMeta = await resolveImage(image);
+const fallbackSrc = image.startsWith('/') ? resolvePath(image) : image;
+
+const containerWidth =
+  width === 'tekst'
+    ? 'max-w-2xl mx-auto'
+    : width === 'pelny'
+    ? 'w-full max-w-7xl mx-auto'
+    : 'max-w-5xl mx-auto';
+---
+
+<figure class:list={['my-8', containerWidth]}>
+  <div class="relative overflow-hidden border border-[var(--color-border)] bg-[var(--color-grid)] group">
+    {imageMeta ? (
+      <Image
+        src={imageMeta}
+        alt={alt}
+        widths={[640, 960, 1280, 1920, 2560]}
+        sizes="(max-width: 640px) 100vw, (max-width: 1280px) 90vw, 1280px"
+        format="webp"
+        quality={88}
+        class="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.01]"
+        loading="lazy"
+        decoding="async"
+      />
+    ) : (
+      <img
+        src={fallbackSrc}
+        alt={alt}
+        class="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.01]"
+        loading="lazy"
+        decoding="async"
+      />
+    )}
+  </div>
+  {caption && (
+    <figcaption class="mt-2 text-xs font-mono text-[var(--color-ink-muted)] flex items-center gap-2">
+      <span class="text-[var(--color-magenta)]">[FIG]</span>
+      <span>{caption}</span>
+    </figcaption>
+  )}
+</figure>

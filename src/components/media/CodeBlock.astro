@@ -1,0 +1,73 @@
+---
+import { Code } from 'astro/components';
+
+interface Props {
+  code: string;
+  language?: string;
+  filename?: string;
+}
+
+const { code = '', language = 'text', filename } = Astro.props;
+
+// Mapowanie języków dla Shiki
+const lang = language === 'text' ? 'plaintext' : language;
+---
+
+<div class="my-8 max-w-4xl mx-auto border-2 border-[var(--color-border)] bg-[var(--color-card)] overflow-hidden">
+  <!-- Belka nagłówka kodu -->
+  <div class="flex items-center justify-between px-4 py-2 bg-[var(--color-grid)] border-b border-[var(--color-border)] font-mono text-xs">
+    <div class="flex items-center gap-2">
+      <span class="inline-block w-2.5 h-2.5 bg-[var(--color-magenta)]"></span>
+      {filename ? (
+        <span class="font-bold text-[var(--color-ink)]">{filename}</span>
+      ) : (
+        <span class="text-[var(--color-ink-muted)]">KOD</span>
+      )}
+      <span class="text-[10px] uppercase px-1.5 py-0.2 border border-[var(--color-border)] text-[var(--color-blue)]">
+        {language}
+      </span>
+    </div>
+
+    <!-- Przycisk kopiowania kodu -->
+    <button
+      type="button"
+      class="copy-code-btn px-2 py-0.5 border border-[var(--color-border)] hover:bg-[var(--color-accent-soft)] transition-colors text-[11px]"
+      data-code={code}
+      aria-label="Kopiuj kod do schowka"
+    >
+      KOPIUJ
+    </button>
+  </div>
+
+  <!-- Zawartość kodu -->
+  <div class="p-4 overflow-x-auto text-xs sm:text-sm font-mono leading-relaxed">
+    <Code code={code} lang={lang as any} theme="github-dark-dimmed" />
+  </div>
+</div>
+
+<script>
+  function initCopyButtons() {
+    document.querySelectorAll<HTMLButtonElement>('.copy-code-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const text = btn.dataset.code || '';
+        try {
+          await navigator.clipboard.writeText(text);
+          const original = btn.textContent;
+          btn.textContent = 'SKOPIOWANO [✓]';
+          btn.classList.add('text-[var(--color-magenta)]');
+          setTimeout(() => {
+            btn.textContent = original;
+            btn.classList.remove('text-[var(--color-magenta)]');
+          }, 2000);
+        } catch (err) {
+          console.error('Błąd kopiowania:', err);
+        }
+      });
+    });
+  }
+
+  if (typeof document !== 'undefined') {
+    initCopyButtons();
+    document.addEventListener('astro:page-load', initCopyButtons);
+  }
+</script>

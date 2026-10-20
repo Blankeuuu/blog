@@ -1,0 +1,209 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlockRenderer from '../../components/articles/BlockRenderer.astro';
+import AsciiArt from '../../components/ascii/AsciiArt.astro';
+import { getPublishedPosts } from '../../lib/posts';
+import { estimateReadingTime } from '../../lib/posts';
+import { tagLabel } from '../../data/tags.mjs';
+import { getTagUrl, getPostsUrl, getPostUrl } from '../../lib/urls';
+import { resolveImage } from '../../lib/images';
+import { Image } from 'astro:assets';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return posts.map((post, idx) => ({
+    params: { slug: post.data.slug },
+    props: {
+      post,
+      prevPost: idx < posts.length - 1 ? posts[idx + 1] : null,
+      nextPost: idx > 0 ? posts[idx - 1] : null,
+    },
+  }));
+}
+
+const { post, prevPost, nextPost } = Astro.props;
+const { title, excerpt, date, updated, tags = [], cover, coverAlt, seed, seoDescription, blocks = [] } = post.data;
+
+const { Content, headings = [] } = await render(post);
+
+// Oblicz szacunkowy czas czytania
+const rawText = (post.body || '') + blocks.map((b) => (b.type === 'text' ? b.body : '')).join(' ');
+const readingMinutes = estimateReadingTime(rawText);
+
+const formattedDate = new Intl.DateTimeFormat('pl-PL', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}).format(date);
+
+const formattedUpdated = updated
+  ? new Intl.DateTimeFormat('pl-PL', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }).format(updated)
+  : null;
+
+const coverMeta = cover ? await resolveImage(cover) : null;
+const asciiSeed = seed || post.data.slug;
+const hasToc = headings.filter((h) => h.depth <= 3).length >= 2;
+---
+
+<BaseLayout
+  title={title}
+  description={seoDescription || excerpt}
+  articleDate={date}
+  articleTags={tags}
+  ogImage={cover}
+>
+  <article class="max-w-5xl mx-auto px-4 sm:px-8 py-10" data-pagefind-body>
+    <!-- Belka nawigacyjna powrotu -->
+    <div class="mb-8 font-mono text-xs text-[var(--color-ink-muted)] flex items-center justify-between border-b border-[var(--color-border)] pb-3">
+      <a href={getPostsUrl()} class="inline-flex items-center gap-1.5 hover:text-[var(--color-magenta)] transition-colors">
+        <span aria-hidden="true">←</span>
+        <span>WSZYSTKIE WPISY</span>
+      </a>
+      <span class="text-[var(--color-magenta)]">#{post.data.slug}</span>
+    </div>
+
+    <!-- Nagłówek artykułu (50% experimental / 50% readable) -->
+    <header class="space-y-6 pb-10 border-b-2 border-[var(--color-blue)]">
+      <!-- Tagi i metadane -->
+      <div class="flex flex-wrap items-center gap-3 font-mono text-xs">
+        <time datetime={date.toISOString()} class="text-[var(--color-blue)] font-bold">
+          {formattedDate}
+        </time>
+        {formattedUpdated && (
+          <span class="text-[var(--color-ink-muted)] text-[11px]">
+            (aktualizacja: {formattedUpdated})
+          </span>
+        )}
+        <span class="text-[var(--color-border)]">•</span>
+        <span class="text-[var(--color-ink-muted)]">{readingMinutes} min czytania</span>
+
+        <div class="flex flex-wrap gap-1.5 ml-auto">
+          {tags.map((t) => (
+            <a
+              href={getTagUrl(t)}
+              class="px-2 py-0.5 border border-[var(--color-border)] text-[10px] text-[var(--color-magenta)] hover:bg-[var(--color-magenta)] hover:text-white transition-colors"
+            >
+              #{tagLabel(t)}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Tytuł główny -->
+      <h1 class="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-[var(--color-ink)] tracking-tight leading-[1.08]">
+        {title}
+      </h1>
+
+      <!-- Wprowadzenie / Lead -->
+      <p class="font-body text-xl sm:text-2xl text-[var(--color-ink-muted)] leading-relaxed max-w-3xl">
+        {excerpt}
+      </p>
+
+      <!-- Okładka artykułu LUB generatywny motyw ASCII -->
+      <div class="pt-4">
+        {coverMeta ? (
+          <div class="border-2 border-[var(--color-blue)] overflow-hidden bg-[var(--color-grid)]">
+            <Image
+              src={coverMeta}
+              alt={coverAlt || title}
+              widths={[640, 1024, 1600]}
+              sizes="(max-width: 1024px) 100vw, 1024px"
+              format="webp"
+              class="w-full h-auto max-h-[500px] object-cover"
+            />
+          </div>
+        ) : (
+          <div class="border-2 border-[var(--color-blue)] bg-[var(--color-card)] p-4 sm:p-6 overflow-hidden flex items-center justify-center">
+            <AsciiArt seed={asciiSeed} cols={64} rows={14} style="contour-mesh" themeColor="blue" />
+          </div>
+        )}
+      </div>
+    </header>
+
+    <!-- Spis treści dla dłuższych artykułów -->
+    {hasToc && (
+      <aside class="my-8 max-w-2xl mx-auto p-4 sm:p-6 border border-[var(--color-border)] bg-[var(--color-card)] font-mono text-xs">
+        <div class="font-bold text-[var(--color-blue)] uppercase tracking-wider mb-3 flex items-center gap-2">
+          <span class="w-2 h-2 bg-[var(--color-magenta)] inline-block"></span>
+          <span>SPIS TREŚCI</span>
+        </div>
+        <nav aria-label="Spis treści artykułu">
+          <ul class="space-y-1.5">
+            {headings
+              .filter((h) => h.depth <= 3)
+              .map((h) => (
+                <li class={h.depth === 3 ? 'pl-4 text-[var(--color-ink-muted)]' : 'font-medium'}>
+                  <a href={`#${h.slug}`} class="hover:text-[var(--color-magenta)] transition-colors">
+                    # {h.text}
+                  </a>
+                </li>
+              ))}
+          </ul>
+        </nav>
+      </aside>
+    )}
+
+    <!-- Główna treść artykułu -->
+    <div class="py-8">
+      <!-- Standardowy Markdown z pliku (jeśli istnieje) -->
+      <div class="prose-journal max-w-2xl mx-auto">
+        <Content />
+      </div>
+
+      <!-- Sekcje multimedialne (Blocks z Pages CMS) -->
+      {blocks.length > 0 && (
+        <div class="article-blocks space-y-6">
+          {blocks.map((block) => (
+            <BlockRenderer block={block} />
+          ))}
+        </div>
+      )}
+    </div>
+
+    <!-- Nawigacja poprzedni / następny wpis -->
+    <footer class="mt-16 pt-8 border-t-2 border-[var(--color-blue)] font-mono text-xs">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+          {prevPost ? (
+            <a
+              href={getPostUrl(prevPost.data.slug)}
+              class="block p-4 border border-[var(--color-border)] hover:border-[var(--color-magenta)] transition-colors group"
+            >
+              <div class="text-[10px] text-[var(--color-ink-muted)] uppercase mb-1">← Starszy wpis</div>
+              <div class="font-display font-bold text-sm text-[var(--color-ink)] group-hover:text-[var(--color-blue)] transition-colors">
+                {prevPost.data.title}
+              </div>
+            </a>
+          ) : (
+            <div class="p-4 border border-dashed border-[var(--color-border)] text-[var(--color-ink-muted)]">
+              Najstarszy wpis w archiwum
+            </div>
+          )}
+        </div>
+
+        <div>
+          {nextPost ? (
+            <a
+              href={getPostUrl(nextPost.data.slug)}
+              class="block p-4 border border-[var(--color-border)] hover:border-[var(--color-magenta)] transition-colors group sm:text-right"
+            >
+              <div class="text-[10px] text-[var(--color-ink-muted)] uppercase mb-1">Nowszy wpis →</div>
+              <div class="font-display font-bold text-sm text-[var(--color-ink)] group-hover:text-[var(--color-blue)] transition-colors">
+                {nextPost.data.title}
+              </div>
+            </a>
+          ) : (
+            <div class="p-4 border border-dashed border-[var(--color-border)] text-[var(--color-ink-muted)] sm:text-right">
+              Najnowszy wpis
+            </div>
+          )}
+        </div>
+      </div>
+    </footer>
+  </article>
+</BaseLayout>

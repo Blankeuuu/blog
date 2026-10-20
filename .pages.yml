@@ -1,0 +1,298 @@
+media:
+  - name: images
+    label: Zdjęcia
+    input: src/assets/images
+    output: /images
+    rename: safe
+    extensions: [png, jpg, jpeg, webp, avif, gif]
+    categories: [image]
+  - name: files
+    label: Pliki i modele 3D
+    input: public/files
+    output: /files
+    rename: safe
+    categories: [document, video]
+
+content:
+  - name: posts
+    label: Wpisy
+    type: collection
+    path: src/content/posts
+    filename:
+      template: "{year}-{month}-{day}-{slug}.md"
+      field: create
+    view:
+      fields: [title, date, draft, tags]
+      primary: title
+      sort: [date, title]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Tytuł
+        type: string
+        required: true
+        options:
+          maxlength: 160
+      - name: slug
+        label: Slug (identyfikator URL)
+        type: string
+        required: true
+        pattern:
+          regex: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          message: "Tylko małe litery a-z, cyfry i pojedyncze myślniki (np. moj-pierwszy-wpis)"
+        options:
+          maxlength: 80
+      - name: excerpt
+        label: Krótki opis (zajawka)
+        type: text
+        required: true
+        options:
+          maxlength: 320
+      - name: date
+        label: Data publikacji
+        type: date
+        required: true
+        options:
+          time: true
+          format: "yyyy-MM-dd'T'HH:mm"
+      - name: updated
+        label: Data aktualizacji (opcjonalnie)
+        type: date
+        options:
+          time: true
+          format: "yyyy-MM-dd'T'HH:mm"
+      - name: draft
+        label: Szkic (nie publikuj publicznie)
+        type: boolean
+        default: false
+      - name: featured
+        label: Wyróżniony wpis
+        type: boolean
+        default: false
+      - name: tags
+        label: Tagi / Tematyka
+        type: select
+        list: true
+        options:
+          values:
+            - name: refleksje
+              label: Refleksje
+            - name: fotografia
+              label: Fotografia i eksperymenty
+            - name: diy-maker
+              label: DIY / Maker
+            - name: ai-agenci
+              label: AI i agenci kodujący
+            - name: elektronika-esp32
+              label: Elektronika i ESP32
+            - name: cad-freecad
+              label: CAD i FreeCAD
+            - name: druk-3d
+              label: Druk 3D
+            - name: programowanie
+              label: Programowanie
+            - name: smart-home
+              label: Smart Home
+      - name: cover
+        label: Zdjęcie okładkowe
+        type: image
+        options:
+          media: images
+      - name: coverAlt
+        label: Opis zdjęcia okładkowego (alt)
+        type: string
+      - name: seed
+        label: Ziarno grafiki ASCII (opcjonalnie)
+        type: string
+        description: Zostaw puste dla automatycznego ziarna opartego na slugu wpisu
+      - name: seoDescription
+        label: Opis SEO (opcjonalnie)
+        type: string
+      - name: blocks
+        label: Sekcje multimedialne artykułu
+        type: block
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{type} ({index})"
+        blockKey: type
+        blocks:
+          - name: text
+            label: Akapit tekstu (Markdown)
+            fields:
+              - name: body
+                label: Treść
+                type: rich-text
+                options:
+                  format: markdown
+                  switcher: true
+                  media: images
+          - name: image
+            label: Zdjęcie
+            fields:
+              - name: image
+                label: Plik zdjęcia
+                type: image
+                required: true
+                options:
+                  media: images
+              - name: alt
+                label: Opis alternatywny (dla czytników ekranu)
+                type: string
+                required: true
+              - name: caption
+                label: Podpis pod zdjęciem (opcjonalnie)
+                type: string
+              - name: width
+                label: Szerokość wyświetlania
+                type: select
+                default: szeroki
+                options:
+                  values:
+                    - name: tekst
+                      label: Szerokość kolumny tekstu
+                    - name: szeroki
+                      label: Szeroki (wyłamany z kolumny)
+                    - name: pelny
+                      label: Pełna szerokość
+          - name: gallery
+            label: Galeria zdjęć
+            fields:
+              - name: caption
+                label: Podpis galerii (opcjonalnie)
+                type: string
+              - name: images
+                label: Zdjęcia w galerii
+                type: object
+                list: true
+                fields:
+                  - name: image
+                    label: Zdjęcie
+                    type: image
+                    required: true
+                    options:
+                      media: images
+                  - name: alt
+                    label: Opis alternatywny (alt)
+                    type: string
+                    required: true
+                  - name: caption
+                    label: Podpis (opcjonalnie)
+                    type: string
+          - name: code
+            label: Blok kodu
+            fields:
+              - name: language
+                label: Język
+                type: select
+                default: text
+                options:
+                  values:
+                    - name: text
+                      label: Zwykły tekst
+                    - name: bash
+                      label: Bash / Shell
+                    - name: powershell
+                      label: PowerShell
+                    - name: c
+                      label: C
+                    - name: cpp
+                      label: C++
+                    - name: python
+                      label: Python
+                    - name: javascript
+                      label: JavaScript
+                    - name: typescript
+                      label: TypeScript
+                    - name: json
+                      label: JSON
+                    - name: yaml
+                      label: YAML
+                    - name: html
+                      label: HTML
+                    - name: css
+                      label: CSS
+                    - name: astro
+                      label: Astro
+                    - name: markdown
+                      label: Markdown
+                    - name: ini
+                      label: INI
+                    - name: toml
+                      label: TOML
+                    - name: diff
+                      label: Git Diff
+                    - name: sql
+                      label: SQL
+              - name: filename
+                label: Nazwa pliku / etykieta (opcjonalnie)
+                type: string
+              - name: code
+                label: Kod źródłowy
+                type: code
+          - name: video
+            label: Wideo (YouTube lub plik MP4/WebM)
+            fields:
+              - name: title
+                label: Tytuł wideo (dostępność)
+                type: string
+                required: true
+              - name: youtube
+                label: Adres filmu YouTube (np. https://youtu.be/...)
+                type: string
+              - name: file
+                label: LUB lokalny plik wideo
+                type: file
+                options:
+                  media: files
+                  extensions: [mp4, webm]
+              - name: poster
+                label: Miniaturka / plakat (dla pliku lokalnego)
+                type: image
+                options:
+                  media: images
+              - name: caption
+                label: Podpis wideo (opcjonalnie)
+                type: string
+          - name: model
+            label: Model 3D (GLB)
+            fields:
+              - name: file
+                label: Plik modelu 3D (.glb)
+                type: file
+                required: true
+                options:
+                  media: files
+                  extensions: [glb]
+              - name: alt
+                label: Opis modelu (dostępność)
+                type: string
+                required: true
+              - name: caption
+                label: Podpis pod modelem (opcjonalnie)
+                type: string
+              - name: poster
+                label: Miniaturka podglądu podczas ładowania (opcjonalnie)
+                type: image
+                options:
+                  media: images
+      - name: body
+        label: Treść uzupełniająca (zwykły Markdown na początku wpisu)
+        type: rich-text
+        options:
+          format: markdown
+          switcher: true
+          media: images
+
+settings:
+  content:
+    merge: true
+  commit:
+    identity: app
+    templates:
+      create: "content(wpisy): utwórz {path}"
+      update: "content(wpisy): zaktualizuj {path}"
+      delete: "content(wpisy): usuń {path}"
+      rename: "content(wpisy): zmień nazwę {oldPath} -> {newPath}"

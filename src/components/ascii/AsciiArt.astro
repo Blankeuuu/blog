@@ -1,0 +1,146 @@
+---
+import { generateAsciiGrid, type AsciiPatternStyle } from './engine';
+
+interface Props {
+  seed?: string;
+  cols?: number;
+  rows?: number;
+  style?: AsciiPatternStyle;
+  interactive?: boolean;
+  class?: string;
+  themeColor?: 'blue' | 'magenta' | 'ink';
+}
+
+const {
+  seed = 'blankeu',
+  cols = 56,
+  rows = 20,
+  style = 'poster-hero',
+  interactive = true,
+  class: className = '',
+  themeColor = 'blue',
+} = Astro.props;
+
+// SSR render - gotowa siatka znaków natychmiast widoczna bez JS
+const initialLines = generateAsciiGrid({ seed, cols, rows, style });
+const initialText = initialLines.join('\n');
+
+const colorClass =
+  themeColor === 'magenta'
+    ? 'text-[var(--color-magenta)]'
+    : themeColor === 'ink'
+    ? 'text-[var(--color-ink)]'
+    : 'text-[var(--color-blue)]';
+---
+
+<div
+  class:list={[
+    'ascii-container relative select-none font-mono text-[10px] leading-[11px] sm:text-[11px] sm:leading-[12px] md:text-[12px] md:leading-[13px] tracking-tight whitespace-pre overflow-hidden',
+    colorClass,
+    className,
+  ]}
+  data-seed={seed}
+  data-cols={cols}
+  data-rows={rows}
+  data-style={style}
+  data-interactive={interactive ? 'true' : 'false'}
+  aria-hidden="true"
+>
+  <pre class="ascii-canvas m-0 p-0 font-inherit leading-inherit">{initialText}</pre>
+</div>
+
+<script>
+  import { generateAsciiGrid, type AsciiPatternStyle } from './engine';
+
+  function initAsciiElements() {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const containers = document.querySelectorAll<HTMLElement>('.ascii-container[data-interactive="true"]');
+
+    containers.forEach((container) => {
+      // Unikaj ponownej inicjalizacji przy View Transitions
+      if (container.dataset.initialized === 'true') return;
+      container.dataset.initialized = 'true';
+
+      if (prefersReducedMotion) return;
+
+      const pre = container.querySelector<HTMLPreElement>('.ascii-canvas');
+      if (!pre) return;
+
+      const seed = container.dataset.seed || 'blankeu';
+      const cols = parseInt(container.dataset.cols || '56', 10);
+      const rows = parseInt(container.dataset.rows || '20', 10);
+      const style = (container.dataset.style || 'poster-hero') as AsciiPatternStyle;
+
+      let isVisible = false;
+      let rafId: number | null = null;
+      let startTime = performance.now();
+      let pointerX = -1;
+      let pointerY = -1;
+      let lastRender = 0;
+
+      // Renderuj z ograniczeniem do ~24-30 fps dla klimatu retro/zine i oszczędności baterii
+      const fps = 24;
+      const interval = 1000 / fps;
+
+      function render(now: number) {
+        if (!isVisible) return;
+
+        if (now - lastRender >= interval) {
+          lastRender = now;
+          const time = (now - startTime) * 0.001;
+          const lines = generateAsciiGrid({
+            seed,
+            cols,
+            rows,
+            style,
+            time,
+            pointerX,
+            pointerY,
+          });
+          pre!.textContent = lines.join('\n');
+        }
+
+        rafId = requestAnimationFrame(render);
+      }
+
+      // Intersection Observer - zero pracy CPU gdy element jest poza ekranem
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          isVisible = entry.isIntersecting;
+          if (isVisible) {
+            startTime = performance.now();
+            rafId = requestAnimationFrame(render);
+          } else if (rafId) {
+            cancelAnimationFrame(rafId);
+            rafId = null;
+          }
+        },
+        { threshold: 0.05 }
+      );
+
+      observer.observe(container);
+
+      // Interakcja ze wskaźnikiem myszy
+      const handlePointerMove = (e: PointerEvent) => {
+        const rect = container.getBoundingClientRect();
+        pointerX = (e.clientX - rect.left) / rect.width;
+        pointerY = (e.clientY - rect.top) / rect.height;
+      };
+
+      const handlePointerLeave = () => {
+        pointerX = -1;
+        pointerY = -1;
+      };
+
+      container.addEventListener('pointermove', handlePointerMove, { passive: true });
+      container.addEventListener('pointerleave', handlePointerLeave, { passive: true });
+    });
+  }
+
+  // Obsługa inicjalizacji i przejść stron (Astro)
+  if (typeof document !== 'undefined') {
+    initAsciiElements();
+    document.addEventListener('astro:page-load', initAsciiElements);
+  }
+</script>

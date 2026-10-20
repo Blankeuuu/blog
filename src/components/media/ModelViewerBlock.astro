@@ -1,0 +1,120 @@
+---
+import { resolvePath } from '../../lib/urls';
+
+interface Props {
+  file: string;
+  alt: string;
+  caption?: string;
+  poster?: string;
+}
+
+const { file, alt, caption, poster } = Astro.props;
+
+const glbSrc = resolvePath(file);
+const posterSrc = poster ? resolvePath(poster) : undefined;
+---
+
+<figure class="my-10 max-w-4xl mx-auto model-viewer-container" aria-label={`Model 3D: ${alt}`}>
+  <div class="relative overflow-hidden border-2 border-[var(--color-blue)] bg-[var(--color-grid)] aspect-[4/3] sm:aspect-[16/10]">
+    <!-- Custom Web Component model-viewer (ładowany dynamicznie poniżej) -->
+    <model-viewer
+      src={glbSrc}
+      alt={alt}
+      poster={posterSrc}
+      camera-controls
+      auto-rotate
+      rotation-per-second="25deg"
+      shadow-intensity="0.8"
+      shadow-softness="0.5"
+      exposure="1"
+      class="w-full h-full bg-transparent"
+      tabindex="0"
+    >
+      <!-- Stan ładowania -->
+      <div slot="poster" class="w-full h-full flex flex-col items-center justify-center bg-[var(--color-grid)] font-mono text-xs text-[var(--color-blue)]">
+        <span class="inline-block w-4 h-4 border-2 border-[var(--color-magenta)] border-t-transparent rounded-full animate-spin mb-2"></span>
+        <span>ŁADOWANIE MODELU 3D (.GLB)...</span>
+      </div>
+
+      <!-- Stan błędu (np. brak obsługi WebGL) -->
+      <div slot="error" class="w-full h-full flex items-center justify-center p-6 text-center font-mono text-xs text-[var(--color-magenta)] bg-[var(--color-card)]">
+        Nie udało się załadować podglądu 3D. Sprawdź, czy przeglądarka obsługuje WebGL.
+      </div>
+    </model-viewer>
+
+    <!-- Pasek narzędziowy modelu 3D (Zresetuj widok, auto-obrót) -->
+    <div class="absolute bottom-3 right-3 flex items-center gap-1.5 z-10 font-mono text-[11px]">
+      <button
+        type="button"
+        class="model-reset-btn px-2 py-1 bg-[var(--bg-paper)]/90 border border-[var(--color-border)] text-[var(--color-ink)] hover:border-[var(--color-magenta)] hover:text-[var(--color-magenta)] transition-colors shadow-sm"
+        aria-label="Zresetuj kamerę modelu"
+      >
+        RESET
+      </button>
+      <button
+        type="button"
+        class="model-rotate-toggle px-2 py-1 bg-[var(--bg-paper)]/90 border border-[var(--color-border)] text-[var(--color-ink)] hover:border-[var(--color-blue)] hover:text-[var(--color-blue)] transition-colors shadow-sm"
+        aria-label="Włącz / wyłącz obrót modelu"
+      >
+        OBRÓT: WŁ.
+      </button>
+    </div>
+  </div>
+
+  <figcaption class="mt-2 text-xs font-mono text-[var(--color-ink-muted)] flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <span class="text-[var(--color-magenta)] font-bold">[3D / CAD]</span>
+      <span>{caption || alt}</span>
+    </div>
+    <span class="text-[10px] hidden sm:inline">Przeciągnij: obrót | Kółko: zoom | Prawy przycisk: przesunięcie</span>
+  </figcaption>
+</figure>
+
+<!-- Skrypt ładujący bibliotekę model-viewer WYŁĄCZNIE gdy na stronie jest model 3D -->
+<script>
+  let modelViewerLoaded = false;
+
+  async function initModelViewers() {
+    const containers = document.querySelectorAll('.model-viewer-container');
+    if (containers.length === 0) return;
+
+    // Załaduj bibliotekę leniwie
+    if (!modelViewerLoaded && !customElements.get('model-viewer')) {
+      try {
+        await import('@google/model-viewer');
+        modelViewerLoaded = true;
+      } catch (err) {
+        console.error('Nie udało się załadować @google/model-viewer:', err);
+      }
+    }
+
+    containers.forEach((container) => {
+      const viewer = container.querySelector('model-viewer') as any;
+      const resetBtn = container.querySelector('.model-reset-btn');
+      const rotateBtn = container.querySelector('.model-rotate-toggle');
+
+      if (!viewer) return;
+
+      resetBtn?.addEventListener('click', () => {
+        if (typeof viewer.resetTurntable === 'function') {
+          viewer.resetTurntable();
+        }
+        if (viewer.cameraOrbit) {
+          viewer.cameraOrbit = '0deg 75deg 105%';
+        }
+      });
+
+      rotateBtn?.addEventListener('click', () => {
+        viewer.autoRotate = !viewer.autoRotate;
+        if (rotateBtn) {
+          rotateBtn.textContent = viewer.autoRotate ? 'OBRÓT: WŁ.' : 'OBRÓT: WYŁ.';
+        }
+      });
+    });
+  }
+
+  if (typeof document !== 'undefined') {
+    initModelViewers();
+    document.addEventListener('astro:page-load', initModelViewers);
+  }
+</script>

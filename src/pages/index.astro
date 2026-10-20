@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroPoster from '../components/editorial/HeroPoster.astro';
+import PostCard from '../components/articles/PostCard.astro';
+import EmptyState from '../components/editorial/EmptyState.astro';
+import { getPublishedPosts } from '../lib/posts';
+import { getPostsUrl } from '../lib/urls';
+
+const posts = await getPublishedPosts();
+const hasPosts = posts.length > 0;
+const latestPosts = posts.slice(0, 4);
+---
+
+<BaseLayout>
+  <!-- Wizualny plakat - punkt centralny strony głównej -->
+  <HeroPoster totalPosts={posts.length} />
+
+  <!-- Sekcja wpisów lub stan pusty -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-8 py-16">
+    {hasPosts ? (
+      <section aria-labelledby="latest-posts-heading" class="space-y-8">
+        <div class="flex items-end justify-between border-b-2 border-[var(--color-blue)] pb-4">
+          <div>
+            <span class="font-mono text-xs text-[var(--color-magenta)]">[OSTATNIE WYDANIA]</span>
+            <h2 id="latest-posts-heading" class="font-display font-black text-3xl sm:text-4xl text-[var(--color-ink)] tracking-tight">
+              Najnowsze wpisy w dzienniku
+            </h2>
+          </div>
+          <a
+            href={getPostsUrl()}
+            class="hidden sm:inline-flex items-center gap-1.5 font-mono text-xs font-bold text-[var(--color-blue)] hover:text-[var(--color-magenta)] transition-colors"
+          >
+            <span>ZOBACZ WSZYSTKIE</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+
+        <!-- Siatka wpisów -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+          {latestPosts.map((post, idx) => (
+            <PostCard post={post} index={idx + 1} />
+          ))}
+        </div>
+
+        <div class="pt-8 text-center sm:hidden">
+          <a
+            href={getPostsUrl()}
+            class="inline-block px-6 py-3 border-2 border-[var(--color-blue)] font-mono text-xs font-bold text-[var(--color-blue)]"
+          >
+            WSZYSTKIE WPISY ({posts.length}) →
+          </a>
+        </div>
+      </section>
+    ) : (
+      <EmptyState />
+    )}
+  </div>
+</BaseLayout>

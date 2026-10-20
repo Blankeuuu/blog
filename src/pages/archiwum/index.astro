@@ -1,0 +1,102 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EmptyState from '../../components/editorial/EmptyState.astro';
+import { getPublishedPosts } from '../../lib/posts';
+import { getPostUrl, getTagUrl } from '../../lib/urls';
+import { tagLabel } from '../../data/tags.mjs';
+
+const posts = await getPublishedPosts();
+const hasPosts = posts.length > 0;
+
+// Grupowanie wpisów według roku
+interface YearGroup {
+  year: number;
+  posts: typeof posts;
+}
+
+const groupsByYear: YearGroup[] = [];
+for (const post of posts) {
+  const y = post.data.date.getFullYear();
+  let g = groupsByYear.find((x) => x.year === y);
+  if (!g) {
+    g = { year: y, posts: [] };
+    groupsByYear.push(g);
+  }
+  g.posts.push(post);
+}
+---
+
+<BaseLayout
+  title="Archiwum chronologiczne"
+  description="Chronologiczny rejestr wszystkich publikacji i devlogów w dzienniku Szymona Potyry."
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-8 py-12">
+    <header class="border-b-2 border-[var(--color-blue)] pb-6 mb-10">
+      <div class="flex items-center gap-2 font-mono text-xs text-[var(--color-magenta)]">
+        <span class="inline-block w-2.5 h-2.5 bg-[var(--color-magenta)]"></span>
+        <span>[CHRONOLOGIA // REJESTR]</span>
+      </div>
+      <h1 class="font-display font-black text-4xl sm:text-5xl text-[var(--color-ink)] tracking-tight mt-1">
+        Archiwum chronologiczne
+      </h1>
+      <p class="font-body text-lg text-[var(--color-ink-muted)] mt-2">
+        Wszystkie wpisy ułożone w porządku od najnowszych do najstarszych.
+      </p>
+    </header>
+
+    {hasPosts ? (
+      <div class="space-y-12">
+        {groupsByYear.map((grp) => (
+          <section aria-labelledby={`year-${grp.year}`} class="space-y-6">
+            <div class="flex items-baseline gap-4 border-b border-[var(--color-border)] pb-2">
+              <h2 id={`year-${grp.year}`} class="font-display font-black text-3xl sm:text-4xl text-[var(--color-blue)]">
+                {grp.year}
+              </h2>
+              <span class="font-mono text-xs text-[var(--color-ink-muted)]">
+                ({grp.posts.length} {grp.posts.length === 1 ? 'wpis' : 'wpisów'})
+              </span>
+            </div>
+
+            <ul class="space-y-4 divide-y divide-[var(--color-border)] font-mono text-xs">
+              {grp.posts.map((post) => {
+                const dateStr = new Intl.DateTimeFormat('pl-PL', {
+                  month: '2-digit',
+                  day: '2-digit',
+                }).format(post.data.date);
+
+                return (
+                  <li class="pt-4 first:pt-0 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 group">
+                    <div class="flex items-baseline gap-3">
+                      <time datetime={post.data.date.toISOString()} class="text-[var(--color-ink-muted)] w-14 shrink-0">
+                        {dateStr}
+                      </time>
+                      <a
+                        href={getPostUrl(post.data.slug)}
+                        class="font-display font-bold text-base sm:text-lg text-[var(--color-ink)] group-hover:text-[var(--color-magenta)] transition-colors"
+                      >
+                        {post.data.title}
+                      </a>
+                    </div>
+
+                    <div class="flex items-center gap-2 shrink-0 pl-16 sm:pl-0">
+                      {post.data.tags?.slice(0, 2).map((t) => (
+                        <a
+                          href={getTagUrl(t)}
+                          class="px-1.5 py-0.5 border border-[var(--color-border)] text-[10px] text-[var(--color-blue)] hover:bg-[var(--color-accent-soft)]"
+                        >
+                          #{tagLabel(t)}
+                        </a>
+                      ))}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        ))}
+      </div>
+    ) : (
+      <EmptyState />
+    )}
+  </div>
+</BaseLayout>
