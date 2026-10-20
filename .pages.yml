@@ -59,14 +59,12 @@ content:
         required: true
         options:
           time: true
-          format: "yyyy-MM-dd'T'HH:mm"
 
       - name: updated
         label: Data aktualizacji (opcjonalnie)
         type: date
         options:
           time: true
-          format: "yyyy-MM-dd'T'HH:mm"
 
       - name: draft
         label: Szkic (nie publikuj publicznie)
@@ -81,26 +79,27 @@ content:
       - name: tags
         label: Tagi / Tematyka
         type: select
-        list: true
         options:
-          - label: Refleksje
-            value: refleksje
-          - label: Fotografia i eksperymenty
-            value: fotografia
-          - label: DIY / Maker
-            value: diy-maker
-          - label: AI i agenci kodujący
-            value: ai-agenci
-          - label: Elektronika i ESP32
-            value: elektronika-esp32
-          - label: CAD i FreeCAD
-            value: cad-freecad
-          - label: Druk 3D
-            value: druk-3d
-          - label: Programowanie
-            value: programowanie
-          - label: Smart Home
-            value: smart-home
+          multiple: true
+          values:
+            - name: refleksje
+              label: Refleksje
+            - name: fotografia
+              label: Fotografia i eksperymenty
+            - name: diy-maker
+              label: DIY / Maker
+            - name: ai-agenci
+              label: AI i agenci kodujący
+            - name: elektronika-esp32
+              label: Elektronika i ESP32
+            - name: cad-freecad
+              label: CAD i FreeCAD
+            - name: druk-3d
+              label: Druk 3D
+            - name: programowanie
+              label: Programowanie
+            - name: smart-home
+              label: Smart Home
 
       - name: cover
         label: Zdjęcie okładkowe
@@ -124,10 +123,7 @@ content:
       - name: blocks
         label: Sekcje multimedialne artykułu
         type: block
-        list:
-          collapsible:
-            collapsed: true
-            summary: "{type} ({index})"
+        list: true
         blockKey: type
         blocks:
           - name: text
@@ -162,12 +158,13 @@ content:
                 type: select
                 default: szeroki
                 options:
-                  - label: Szerokość kolumny tekstu
-                    value: tekst
-                  - label: Szeroki (wyłamany z kolumny)
-                    value: szeroki
-                  - label: Pełna szerokość
-                    value: pelny
+                  values:
+                    - name: tekst
+                      label: Szerokość kolumny tekstu
+                    - name: szeroki
+                      label: Szeroki (wyłamany z kolumny)
+                    - name: pelny
+                      label: Pełna szerokość
 
           - name: gallery
             label: Galeria zdjęć
@@ -194,7 +191,7 @@ content:
                     label: Podpis (opcjonalnie)
                     type: string
 
-          - name: code_block
+          - name: code
             label: Blok kodu
             fields:
               - name: language
@@ -202,42 +199,43 @@ content:
                 type: select
                 default: text
                 options:
-                  - label: Zwykły tekst
-                    value: text
-                  - label: Bash / Shell
-                    value: bash
-                  - label: PowerShell
-                    value: powershell
-                  - label: C
-                    value: c
-                  - label: C++
-                    value: cpp
-                  - label: Python
-                    value: python
-                  - label: JavaScript
-                    value: javascript
-                  - label: TypeScript
-                    value: typescript
-                  - label: JSON
-                    value: json
-                  - label: YAML
-                    value: yaml
-                  - label: HTML
-                    value: html
-                  - label: CSS
-                    value: css
-                  - label: Astro
-                    value: astro
-                  - label: Markdown
-                    value: markdown
-                  - label: INI
-                    value: ini
-                  - label: TOML
-                    value: toml
-                  - label: Git Diff
-                    value: diff
-                  - label: SQL
-                    value: sql
+                  values:
+                    - name: text
+                      label: Zwykły tekst
+                    - name: bash
+                      label: Bash / Shell
+                    - name: powershell
+                      label: PowerShell
+                    - name: c
+                      label: C
+                    - name: cpp
+                      label: C++
+                    - name: python
+                      label: Python
+                    - name: javascript
+                      label: JavaScript
+                    - name: typescript
+                      label: TypeScript
+                    - name: json
+                      label: JSON
+                    - name: yaml
+                      label: YAML
+                    - name: html
+                      label: HTML
+                    - name: css
+                      label: CSS
+                    - name: astro
+                      label: Astro
+                    - name: markdown
+                      label: Markdown
+                    - name: ini
+                      label: INI
+                    - name: toml
+                      label: TOML
+                    - name: diff
+                      label: Git Diff
+                    - name: sql
+                      label: SQL
               - name: filename
                 label: Nazwa pliku / etykieta (opcjonalnie)
                 type: string
