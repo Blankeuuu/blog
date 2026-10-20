@@ -6,28 +6,26 @@ const baseUrl = getBaseUrl();
 
 <div
   id="search-dialog"
-  class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm transition-opacity"
+  class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm transition-opacity"
   role="dialog"
   aria-modal="true"
   aria-label="Wyszukiwarka wpisów"
 >
   <div class="min-h-screen px-4 text-center sm:p-0 flex items-start justify-center pt-16 sm:pt-24">
     <div
-      class="relative w-full max-w-2xl transform overflow-hidden border border-[var(--color-border)] bg-[var(--bg-paper)] p-6 text-left shadow-2xl transition-all sm:my-8"
+      class="terminal-window relative w-full max-w-2xl transform overflow-hidden border border-[var(--color-border)] bg-[var(--bg-surface)] p-6 text-left shadow-2xl transition-all sm:my-8 corner-brackets"
       id="search-box"
     >
       <div class="flex items-center justify-between border-b border-[var(--color-border)] pb-3">
         <div class="flex items-center gap-2">
-          <span class="font-mono text-xs text-[var(--color-magenta)]">[SZUKAJ]</span>
-          <h2 class="font-display text-lg font-bold tracking-tight text-[var(--color-ink)]">
-            Wyszukiwarka artykułów
-          </h2>
+          <span class="w-2.5 h-2.5 bg-[var(--color-green)] inline-block"></span>
+          <span class="font-mono text-xs text-[var(--color-green)] font-bold">[QUERY_REGISTRY // SEARCH]</span>
         </div>
         <button
           type="button"
           id="search-close-btn"
-          class="font-mono text-xs px-2 py-1 border border-[var(--color-border)] hover:bg-[var(--color-accent-soft)] transition-colors"
-          aria-label="Zamknij wyszukiwarkę"
+          class="font-mono text-xs px-2 py-0.5 border border-[var(--color-border)] hover:border-[var(--color-green)] hover:text-[var(--color-green)] transition-colors text-[var(--color-ink)]"
+          aria-label="Zamknij okno wyszukiwarki"
         >
           ESC / [X]
         </button>
@@ -38,8 +36,8 @@ const baseUrl = getBaseUrl();
           <input
             type="search"
             id="search-input"
-            class="w-full border-2 border-[var(--color-blue)] bg-transparent px-4 py-3 font-mono text-sm text-[var(--color-ink)] placeholder-[var(--color-ink-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-magenta)]"
-            placeholder="Wpisz frazę (np. ESP32, FreeCAD, agent)..."
+            class="w-full border border-[var(--color-border)] bg-[var(--bg-canvas)] px-4 py-3 font-mono text-sm text-[var(--color-ink)] placeholder-[var(--color-ink-muted)] focus:outline-none focus:border-[var(--color-green)] focus:ring-1 focus:ring-[var(--color-green)]"
+            placeholder="Wpisz zapytanie magistrali (np. ESP32, agent, CAD)..."
             autocomplete="off"
           />
         </div>
@@ -47,20 +45,20 @@ const baseUrl = getBaseUrl();
 
       <div class="mt-4 max-h-96 overflow-y-auto" id="search-results">
         <div id="search-initial" class="py-8 text-center text-xs font-mono text-[var(--color-ink-muted)]">
-          Wpisz co najmniej 2 znaki, aby przeszukać opublikowane notatki.
+          Wprowadź co najmniej 2 znaki, aby przeszukać zindeksowane pakiety danych.
         </div>
-        <div id="search-loading" class="hidden py-8 text-center text-xs font-mono text-[var(--color-blue)]">
-          Przeszukiwanie indeksu...
+        <div id="search-loading" class="hidden py-8 text-center text-xs font-mono text-[var(--color-green)]">
+          Skanowanie indeksu Pagefind...
         </div>
-        <div id="search-empty" class="hidden py-8 text-center text-xs font-mono text-[var(--color-magenta)]">
-          Brak wyników dla podanej frazy.
+        <div id="search-empty" class="hidden py-8 text-center text-xs font-mono text-[var(--color-red)]">
+          [FAULT: 0 WYNIKÓW W REJESTRZE DLA PODANEGO ZAPYTANIA]
         </div>
         <ul id="search-list" class="space-y-3 divide-y divide-[var(--color-border)]"></ul>
       </div>
 
       <div class="mt-4 pt-3 border-t border-[var(--color-border)] flex justify-between items-center text-[10px] font-mono text-[var(--color-ink-muted)]">
-        <span>Powered by Pagefind (język polski)</span>
-        <span>Naciśnij <kbd class="px-1 border border-[var(--color-border)]">ESC</kbd> aby wyjść</span>
+        <span>Pagefind Engine (język polski)</span>
+        <span>Naciśnij <kbd class="px-1 border border-[var(--color-border)]">ESC</kbd> aby zamknąć bufor</span>
       </div>
     </div>
   </div>
@@ -159,7 +157,7 @@ const baseUrl = getBaseUrl();
             list.innerHTML = `
               <li class="py-4 text-xs font-mono text-[var(--color-ink-muted)]">
                 Indeks Pagefind nie jest jeszcze wygenerowany lokalnie.<br/>
-                Uruchom <code class="text-[var(--color-magenta)]">npm run build</code>, aby zbudować statyczny indeks wyszukiwarki.
+                Uruchom <code class="text-[var(--color-green)]">npm run build</code>, aby zbudować statyczny indeks wyszukiwarki.
               </li>
             `;
           }
@@ -183,8 +181,8 @@ const baseUrl = getBaseUrl();
             .map((res) => `
               <li class="pt-3 first:pt-0">
                 <a href="${res.url}" class="block group">
-                  <div class="font-display font-bold text-sm text-[var(--color-blue)] group-hover:text-[var(--color-magenta)] transition-colors">
-                    ${res.meta.title || 'Wpis bez tytułu'}
+                  <div class="font-display font-bold text-sm text-[var(--color-green)] group-hover:text-white transition-colors">
+                    -> ${res.meta.title || 'Wpis bez tytułu'}
                   </div>
                   <div class="text-xs text-[var(--color-ink-muted)] mt-1 font-body line-clamp-2">
                     ${res.excerpt}

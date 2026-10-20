@@ -8,7 +8,7 @@ interface Props {
   style?: AsciiPatternStyle;
   interactive?: boolean;
   class?: string;
-  themeColor?: 'blue' | 'magenta' | 'ink';
+  themeColor?: 'blue' | 'magenta' | 'ink' | 'green' | 'red' | 'yellow';
 }
 
 const {
@@ -18,7 +18,7 @@ const {
   style = 'poster-hero',
   interactive = true,
   class: className = '',
-  themeColor = 'blue',
+  themeColor = 'green',
 } = Astro.props;
 
 // SSR render - gotowa siatka znaków natychmiast widoczna bez JS
@@ -26,7 +26,13 @@ const initialLines = generateAsciiGrid({ seed, cols, rows, style });
 const initialText = initialLines.join('\n');
 
 const colorClass =
-  themeColor === 'magenta'
+  themeColor === 'green'
+    ? 'text-[var(--color-green)]'
+    : themeColor === 'red'
+    ? 'text-[var(--color-red)]'
+    : themeColor === 'yellow'
+    ? 'text-[var(--color-yellow)]'
+    : themeColor === 'magenta'
     ? 'text-[var(--color-magenta)]'
     : themeColor === 'ink'
     ? 'text-[var(--color-ink)]'
@@ -103,42 +109,51 @@ const colorClass =
         rafId = requestAnimationFrame(render);
       }
 
-      // Intersection Observer - zero pracy CPU gdy element jest poza ekranem
+      function startLoop() {
+        if (!rafId && isVisible) {
+          startTime = performance.now();
+          rafId = requestAnimationFrame(render);
+        }
+      }
+
+      function stopLoop() {
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+      }
+
+      // Reakcja na ruch myszy (dystorsja pola)
+      container.addEventListener('pointermove', (e) => {
+        const rect = container.getBoundingClientRect();
+        pointerX = (e.clientX - rect.left) / rect.width;
+        pointerY = (e.clientY - rect.top) / rect.height;
+      });
+
+      container.addEventListener('pointerleave', () => {
+        pointerX = -1;
+        pointerY = -1;
+      });
+
+      // IntersectionObserver pauzuje pętlę renderowania gdy element nie jest widoczny
       const observer = new IntersectionObserver(
         (entries) => {
-          const entry = entries[0];
-          isVisible = entry.isIntersecting;
-          if (isVisible) {
-            startTime = performance.now();
-            rafId = requestAnimationFrame(render);
-          } else if (rafId) {
-            cancelAnimationFrame(rafId);
-            rafId = null;
-          }
+          entries.forEach((entry) => {
+            isVisible = entry.isIntersecting;
+            if (isVisible) {
+              startLoop();
+            } else {
+              stopLoop();
+            }
+          });
         },
         { threshold: 0.05 }
       );
 
       observer.observe(container);
-
-      // Interakcja ze wskaźnikiem myszy
-      const handlePointerMove = (e: PointerEvent) => {
-        const rect = container.getBoundingClientRect();
-        pointerX = (e.clientX - rect.left) / rect.width;
-        pointerY = (e.clientY - rect.top) / rect.height;
-      };
-
-      const handlePointerLeave = () => {
-        pointerX = -1;
-        pointerY = -1;
-      };
-
-      container.addEventListener('pointermove', handlePointerMove, { passive: true });
-      container.addEventListener('pointerleave', handlePointerLeave, { passive: true });
     });
   }
 
-  // Obsługa inicjalizacji i przejść stron (Astro)
   if (typeof document !== 'undefined') {
     initAsciiElements();
     document.addEventListener('astro:page-load', initAsciiElements);

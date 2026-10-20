@@ -12,30 +12,32 @@ const latestPosts = posts.slice(0, 4);
 ---
 
 <BaseLayout>
-  <!-- Wizualny plakat - punkt centralny strony głównej -->
+  <!-- Konsola diagnostyczna - punkt centralny strony głównej -->
   <HeroPoster totalPosts={posts.length} />
 
-  <!-- Sekcja wpisów lub stan pusty -->
+  <!-- Sekcja wpisów lub stan pusty POST -->
   <div class="max-w-7xl mx-auto px-4 sm:px-8 py-16">
     {hasPosts ? (
       <section aria-labelledby="latest-posts-heading" class="space-y-8">
-        <div class="flex items-end justify-between border-b-2 border-[var(--color-blue)] pb-4">
+        <div class="flex flex-wrap items-end justify-between border-b border-[var(--color-border)] pb-4 gap-4">
           <div>
-            <span class="font-mono text-xs text-[var(--color-magenta)]">[OSTATNIE WYDANIA]</span>
+            <div class="font-mono text-xs text-[var(--color-green)] font-bold mb-1">
+              [STREAM_OUTPUT // NAJNOWSZE ZRZUTY DANYCH]
+            </div>
             <h2 id="latest-posts-heading" class="font-display font-black text-3xl sm:text-4xl text-[var(--color-ink)] tracking-tight">
-              Najnowsze wpisy w dzienniku
+              Rejestr pakietów inżynieryjnych
             </h2>
           </div>
           <a
             href={getPostsUrl()}
-            class="hidden sm:inline-flex items-center gap-1.5 font-mono text-xs font-bold text-[var(--color-blue)] hover:text-[var(--color-magenta)] transition-colors"
+            class="hidden sm:inline-flex items-center gap-1.5 font-mono text-xs font-bold text-[var(--color-green)] hover:text-white transition-colors px-3 py-1.5 border border-[var(--color-border)] hover:border-[var(--color-green)] bg-[var(--bg-surface)]"
           >
-            <span>ZOBACZ WSZYSTKIE</span>
+            <span>[PEŁNY REJESTR ({posts.length})]</span>
             <span aria-hidden="true">→</span>
           </a>
         </div>
 
-        <!-- Siatka wpisów -->
+        <!-- Siatka wpisów biletowych -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
           {latestPosts.map((post, idx) => (
             <PostCard post={post} index={idx + 1} />
@@ -45,9 +47,9 @@ const latestPosts = posts.slice(0, 4);
         <div class="pt-8 text-center sm:hidden">
           <a
             href={getPostsUrl()}
-            class="inline-block px-6 py-3 border-2 border-[var(--color-blue)] font-mono text-xs font-bold text-[var(--color-blue)]"
+            class="inline-block px-5 py-3 border border-[var(--color-green)] font-mono text-xs font-bold text-[var(--color-green)] bg-[var(--bg-surface)]"
           >
-            WSZYSTKIE WPISY ({posts.length}) →
+            [WSZYSTKIE PAKIETY ({posts.length}) →]
           </a>
         </div>
       </section>

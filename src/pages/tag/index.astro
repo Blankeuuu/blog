@@ -8,20 +8,20 @@ const tagCounts = await getTagCounts();
 ---
 
 <BaseLayout
-  title="Tematy i kategorie"
-  description="Wszystkie obszary tematyczne bloga Szymona Potyry: refleksje, maker, elektronika, CAD, druk 3D, programowanie, smart home."
+  title="Magistrala tematów"
+  description="Wszystkie obszary tematyczne devloga Szymona Potyry: refleksje, maker, elektronika, CAD, druk 3D, programowanie, smart home."
 >
   <div class="max-w-5xl mx-auto px-4 sm:px-8 py-12">
-    <header class="border-b-2 border-[var(--color-blue)] pb-6 mb-10">
-      <div class="flex items-center gap-2 font-mono text-xs text-[var(--color-magenta)]">
-        <span class="inline-block w-2.5 h-2.5 bg-[var(--color-magenta)]"></span>
-        <span>[KLASYFIKACJA]</span>
+    <header class="border-b border-[var(--color-border)] pb-6 mb-10">
+      <div class="flex items-center gap-2 font-mono text-xs text-[var(--color-green)] mb-1">
+        <span class="inline-block w-2.5 h-2.5 bg-[var(--color-green)]"></span>
+        <span>[BUS_ROUTING // KLASYFIKACJA MAGISTRALI]</span>
       </div>
-      <h1 class="font-display font-black text-4xl sm:text-5xl text-[var(--color-ink)] tracking-tight mt-1">
-        Obszary tematyczne
+      <h1 class="font-display font-black text-4xl sm:text-5xl text-[var(--color-ink)] tracking-tight">
+        Zworki magistrali tematycznych
       </h1>
-      <p class="font-body text-lg text-[var(--color-ink-muted)] mt-2">
-        Wybierz temat, aby wyświetlić powiązane artykuły, notatki techniczne i projekty.
+      <p class="font-body text-base sm:text-lg text-[var(--color-ink-muted)] mt-2">
+        Wybierz pin zworki, aby odczytać strumienie powiązanych pakietów inżynieryjnych i notatek.
       </p>
     </header>
 
@@ -31,15 +31,15 @@ const tagCounts = await getTagCounts();
         return (
           <a
             href={getTagUrl(t.slug)}
-            class="group p-6 border-2 border-[var(--color-border)] bg-[var(--color-card)] hover:border-[var(--color-magenta)] hover:shadow-[4px_4px_0_var(--color-blue)] transition-all"
+            class="terminal-window group p-5 border border-[var(--color-border)] bg-[var(--bg-surface)] hover:border-[var(--color-green)] hover:shadow-[3px_3px_0_var(--color-green)] transition-all corner-brackets"
           >
             <div class="flex items-center justify-between font-mono text-xs mb-3">
-              <span class="text-[var(--color-blue)] font-bold">#{t.short}</span>
-              <span class="px-2 py-0.5 border border-[var(--color-border)] bg-[var(--bg-paper)] text-[var(--color-ink-muted)]">
-                {count} {count === 1 ? 'wpis' : count >= 2 && count <= 4 ? 'wpisy' : 'wpisów'}
+              <span class="text-[var(--color-green)] font-bold">JMP_{t.short.toUpperCase()}</span>
+              <span class="px-2 py-0.5 border border-[var(--color-border)] bg-[var(--bg-canvas)] text-[var(--color-ink-muted)] text-[10px]">
+                {count} {count === 1 ? 'PAKIET' : 'PAKIETY'}
               </span>
             </div>
-            <h2 class="font-display font-bold text-xl text-[var(--color-ink)] group-hover:text-[var(--color-blue)] transition-colors">
+            <h2 class="font-display font-bold text-xl text-[var(--color-ink)] group-hover:text-[var(--color-green)] transition-colors">
               {t.label}
             </h2>
           </a>
