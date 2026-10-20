@@ -57,14 +57,14 @@ describe('postSchema', () => {
     expect(res.success).toBe(false);
   });
 
-  it('wymaga opisu coverAlt gdy podano cover', () => {
-    const invalid = {
+  it('zezwala na brak opisu coverAlt gdy podano cover (fallback w szablonie do title)', () => {
+    const postWithCover = {
       ...validPost,
-      cover: '/images/cover.jpg',
+      cover: '/images/test.jpg',
       coverAlt: '', // brak opisu alt
     };
-    const res = postSchema.safeParse(invalid);
-    expect(res.success).toBe(false);
+    const res = postSchema.safeParse(postWithCover);
+    expect(res.success).toBe(true);
   });
 
   it('wymaga dokładnie jednego źródła w bloku wideo', () => {

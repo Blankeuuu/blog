@@ -157,9 +157,7 @@ export const postSchema = z
     fixture: z.boolean().optional(),
   })
   .superRefine((v, ctx) => {
-    if (v.cover && !v.coverAlt) {
-      ctx.addIssue({ code: 'custom', message: 'Okładka wymaga opisu alternatywnego (coverAlt)', path: ['coverAlt'] });
-    }
+    // coverAlt jest opcjonalny - przy braku szablony używają fallbacku do post.data.title
     if (v.updated && v.updated < v.date) {
       ctx.addIssue({ code: 'custom', message: 'Data aktualizacji nie może być wcześniejsza niż publikacji', path: ['updated'] });
     }
